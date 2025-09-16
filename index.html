@@ -14,11 +14,15 @@
 
         body {
             font-family: 'Forum', serif;
-            background: linear-gradient(135deg, #d7b0ff 0%, #c9a0ff 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             overflow: hidden;
             user-select: none;
             transition: background 0.8s ease;
+        }
+
+        body.simca-mode {
+            background: linear-gradient(135deg, #d7b0ff 0%, #c9a0ff 100%);
         }
 
         body.kuba-mode {
@@ -177,7 +181,7 @@
             transform: translateX(-50%);
             color: #333;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 400;
             text-align: center;
             white-space: nowrap;
         }
@@ -209,8 +213,8 @@
         }
 
         .photo-placeholder {
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 280px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             margin-bottom: 3rem;
@@ -219,6 +223,16 @@
             align-items: center;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .photo-text {
@@ -404,16 +418,6 @@
                 height: 45px;
             }
 
-            .head {
-                width: 150px;
-                height: 150px;
-            }
-
-            .mouth {
-                width: 60px;
-                height: 45px;
-            }
-
             .instruction {
                 font-size: 14px;
                 top: -100px;
@@ -438,16 +442,31 @@
             }
 
             .save-date-text {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+
+            .save-date-text .big-b {
+                font-size: 2.8rem;
             }
 
             .date {
                 font-size: 1.8rem;
             }
 
+            .names {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+
+            .details {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
             .photo-placeholder {
-                width: 250px;
-                height: 250px;
+                width: 220px;
+                height: 220px;
+                margin-bottom: 2rem;
             }
 
             .music-section {
@@ -477,7 +496,7 @@
             }
         }
     </style>
-    </head>
+</head>
 <body>
     <!-- Background Music - Two Tracks -->
     <audio id="track1" loop>
@@ -489,7 +508,7 @@
         <source src="song2.mp3" type="audio/mpeg">
         <source src="song2.ogg" type="audio/ogg">
     </audio>
-    
+
     <!-- Music Control Section -->
     <div class="music-section" id="musicSection">
         <div class="music-hint">Klikni pro změnu módu</div>
@@ -503,6 +522,7 @@
         <div class="mode-indicator active" id="simcaMode">Simča Mode: On</div>
         <div class="mode-indicator inactive" id="kubaMode">Kuba Mode: Off</div>
     </div>
+    
     <div class="container">
         <!-- Initial pentagon -->
         <div class="pentagon" id="mainPentagon">
@@ -529,8 +549,8 @@
         <!-- Final content -->
         <div class="final-content" id="finalContent">
             <div class="photo-placeholder">
-                <div class="photo-text">Vaše foto zde</div>
-                <!-- Replace with: <img src="your-photo.jpg" alt="Couple Photo"> -->
+                <img src="photo.jpg" alt="Simča & Kuba">
+                <!-- Fallback: <div class="photo-text">Vaše foto zde</div> -->
             </div>
 
             <div class="save-date-text">
@@ -593,25 +613,11 @@
             }, 500);
         }
 
-        function startGame() {
-            if (gameStarted) return;
-            gameStarted = true;
-
-            // Hide main pentagon
-            mainPentagon.style.opacity = '0';
-            mainPentagon.style.transform = 'scale(0)';
-
-            setTimeout(() => {
-                mainPentagon.style.display = 'none';
-                createSmallPentagons();
-                showHead();
-            }, 500);
-        }
-
         function startMusic() {
             if (!musicStarted) {
                 musicStarted = true;
                 track1.play().catch(e => console.log('Autoplay prevented:', e));
+                document.body.classList.add('simca-mode');
                 updateModeDisplay();
             }
         }
@@ -635,12 +641,14 @@
             // Switch track
             currentTrack = currentTrack === 1 ? 2 : 1;
             
-            // Play new track
+            // Play new track and change background
             if (currentTrack === 1) {
                 track1.play().catch(e => console.log('Autoplay prevented:', e));
                 document.body.classList.remove('kuba-mode');
+                document.body.classList.add('simca-mode');
             } else {
                 track2.play().catch(e => console.log('Autoplay prevented:', e));
+                document.body.classList.remove('simca-mode');
                 document.body.classList.add('kuba-mode');
             }
             
@@ -789,6 +797,8 @@
             setTimeout(() => {
                 headContainer.classList.remove('visible');
                 progress.classList.remove('visible');
+                musicSection.classList.remove('visible');
+                modeIndicators.classList.remove('visible');
                 
                 setTimeout(() => {
                     finalContent.classList.add('visible');
