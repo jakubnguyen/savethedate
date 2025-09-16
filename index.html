@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Save the Date</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,11 +13,16 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Forum', serif;
+            background: linear-gradient(135deg, #d7b0ff 0%, #c9a0ff 100%);
             min-height: 100vh;
             overflow: hidden;
             user-select: none;
+            transition: background 0.8s ease;
+        }
+
+        body.kuba-mode {
+            background: linear-gradient(135deg, #fffcc9 0%, #fff0a0 100%);
         }
 
         .container {
@@ -203,18 +208,6 @@
             visibility: visible;
         }
 
-        .celebration {
-            font-size: 4rem;
-            margin-bottom: 2rem;
-            animation: celebrate 1s ease;
-        }
-
-        @keyframes celebrate {
-            0% { transform: scale(0) rotate(-180deg); }
-            50% { transform: scale(1.2) rotate(-10deg); }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-
         .photo-placeholder {
             width: 300px;
             height: 300px;
@@ -235,17 +228,22 @@
         }
 
         .save-date-text {
-            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+            font-family: 'Forum', serif;
             font-size: 3rem;
-            font-weight: 700;
+            font-weight: 400;
             margin-bottom: 1rem;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
+        }
+
+        .save-date-text .big-b {
+            font-size: 3.5rem;
+            font-weight: 400;
         }
 
         .date {
-            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
+            font-family: 'Forum', serif;
             font-size: 2.5rem;
-            font-weight: 600;
+            font-weight: 400;
             margin-bottom: 2rem;
             color: rgba(255, 255, 255, 0.9);
         }
@@ -292,11 +290,26 @@
             visibility: visible;
         }
 
-        /* Music Control Button */
-        .music-control {
+        /* Music Control Section */
+        .music-section {
             position: fixed;
             top: 20px;
             right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 30;
+        }
+
+        .music-section.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .music-control {
             width: 50px;
             height: 50px;
             border: none;
@@ -307,7 +320,6 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            z-index: 30;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -321,8 +333,59 @@
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .music-control.muted {
-            opacity: 0.5;
+        .music-hint {
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Mode Indicators */
+        .mode-indicators {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 25;
+        }
+
+        .mode-indicators.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mode-indicator {
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mode-indicator.active {
+            font-weight: bold;
+            background: rgba(36, 178, 255, 0.9);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .mode-indicator.inactive {
+            color: #888;
+            background: rgba(60, 60, 60, 0.7);
         }
 
         /* Mobile responsiveness */
@@ -387,29 +450,59 @@
                 height: 250px;
             }
 
-            .music-control {
+            .music-section {
                 top: 15px;
                 right: 15px;
+                gap: 10px;
+            }
+
+            .music-control {
                 width: 45px;
                 height: 45px;
                 font-size: 18px;
+            }
+
+            .music-hint {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .mode-indicators {
+                top: 70px;
+            }
+
+            .mode-indicator {
+                font-size: 12px;
+                padding: 6px 15px;
             }
         }
     </style>
     </head>
 <body>
-    <!-- Background Music -->
-    <audio id="backgroundMusic" loop>
-        <source src="your-song.mp3" type="audio/mpeg">
-        <source src="your-song.ogg" type="audio/ogg">
-        <!-- Fallback text -->
-        Váš prohlížeč nepodporuje audio.
+    <!-- Background Music - Two Tracks -->
+    <audio id="track1" loop>
+        <source src="song1.mp3" type="audio/mpeg">
+        <source src="song1.ogg" type="audio/ogg">
     </audio>
     
-    <!-- Music Control Button -->
-    <button class="music-control" id="musicControl">
-        🔊
-    </button>
+    <audio id="track2" loop>
+        <source src="song2.mp3" type="audio/mpeg">
+        <source src="song2.ogg" type="audio/ogg">
+    </audio>
+    
+    <!-- Music Control Section -->
+    <div class="music-section" id="musicSection">
+        <div class="music-hint">Klikni pro změnu módu</div>
+        <button class="music-control" id="musicControl">
+            💜
+        </button>
+    </div>
+
+    <!-- Mode Indicators -->
+    <div class="mode-indicators" id="modeIndicators">
+        <div class="mode-indicator active" id="simcaMode">Simča Mode: On</div>
+        <div class="mode-indicator inactive" id="kubaMode">Kuba Mode: Off</div>
+    </div>
     <div class="container">
         <!-- Initial pentagon -->
         <div class="pentagon" id="mainPentagon">
@@ -435,15 +528,15 @@
 
         <!-- Final content -->
         <div class="final-content" id="finalContent">
-            <div class="celebration">🎉</div>
-            
             <div class="photo-placeholder">
                 <div class="photo-text">Vaše foto zde</div>
                 <!-- Replace with: <img src="your-photo.jpg" alt="Couple Photo"> -->
             </div>
 
-            <div class="save-date-text">Save the Date</div>
-            <div class="names">Vaše jména zde</div>
+            <div class="save-date-text">
+                <span class="big-b">B</span>udeme se <span class="big-b">B</span>rát
+            </div>
+            <div class="names">Simča & Kuba</div>
             <div class="date">29. 08. 2026</div>
             <div class="details">
                 Bereme se a chceme, abyste tam byli!<br>
@@ -459,45 +552,45 @@
         const progress = document.getElementById('progress');
         const fedCountSpan = document.getElementById('fedCount');
         const finalContent = document.getElementById('finalContent');
-        const backgroundMusic = document.getElementById('backgroundMusic');
+        const track1 = document.getElementById('track1');
+        const track2 = document.getElementById('track2');
         const musicControl = document.getElementById('musicControl');
+        const musicSection = document.getElementById('musicSection');
+        const modeIndicators = document.getElementById('modeIndicators');
+        const simcaMode = document.getElementById('simcaMode');
+        const kubaMode = document.getElementById('kubaMode');
         
         let smallPentagons = [];
         let fedCount = 0;
         let isDragging = false;
         let dragElement = null;
         let gameStarted = false;
-        let musicPlaying = false;
+        let musicStarted = false;
+        let currentTrack = 1; // 1 = Simča Mode (track1), 2 = Kuba Mode (track2)
 
         // Start the game
         mainPentagon.addEventListener('click', startGame);
         
         // Music control
-        musicControl.addEventListener('click', toggleMusic);
+        musicControl.addEventListener('click', switchTrack);
 
-        // Try to start music on first user interaction
-        document.addEventListener('click', startMusicOnInteraction, { once: true });
+        function startGame() {
+            if (gameStarted) return;
+            gameStarted = true;
 
-        function startMusicOnInteraction() {
-            if (!musicPlaying) {
-                toggleMusic();
-            }
-        }
+            // Hide main pentagon
+            mainPentagon.style.opacity = '0';
+            mainPentagon.style.transform = 'scale(0)';
 
-        function toggleMusic() {
-            if (musicPlaying) {
-                backgroundMusic.pause();
-                musicControl.textContent = '🔇';
-                musicControl.classList.add('muted');
-                musicPlaying = false;
-            } else {
-                backgroundMusic.play().catch(e => {
-                    console.log('Autoplay prevented:', e);
-                });
-                musicControl.textContent = '🔊';
-                musicControl.classList.remove('muted');
-                musicPlaying = true;
-            }
+            // Start music and show controls
+            startMusic();
+            showMusicControls();
+
+            setTimeout(() => {
+                mainPentagon.style.display = 'none';
+                createSmallPentagons();
+                showHead();
+            }, 500);
         }
 
         function startGame() {
@@ -513,6 +606,67 @@
                 createSmallPentagons();
                 showHead();
             }, 500);
+        }
+
+        function startMusic() {
+            if (!musicStarted) {
+                musicStarted = true;
+                track1.play().catch(e => console.log('Autoplay prevented:', e));
+                updateModeDisplay();
+            }
+        }
+
+        function showMusicControls() {
+            setTimeout(() => {
+                musicSection.classList.add('visible');
+                modeIndicators.classList.add('visible');
+            }, 1000);
+        }
+
+        function switchTrack() {
+            if (!musicStarted) return;
+            
+            // Stop current track
+            track1.pause();
+            track2.pause();
+            track1.currentTime = 0;
+            track2.currentTime = 0;
+            
+            // Switch track
+            currentTrack = currentTrack === 1 ? 2 : 1;
+            
+            // Play new track
+            if (currentTrack === 1) {
+                track1.play().catch(e => console.log('Autoplay prevented:', e));
+                document.body.classList.remove('kuba-mode');
+            } else {
+                track2.play().catch(e => console.log('Autoplay prevented:', e));
+                document.body.classList.add('kuba-mode');
+            }
+            
+            updateModeDisplay();
+        }
+
+        function updateModeDisplay() {
+            if (currentTrack === 1) {
+                // Simča Mode
+                musicControl.textContent = '💜';
+                simcaMode.textContent = 'Simča Mode: On';
+                kubaMode.textContent = 'Kuba Mode: Off';
+                simcaMode.classList.add('active');
+                simcaMode.classList.remove('inactive');
+                kubaMode.classList.add('inactive');
+                kubaMode.classList.remove('active');
+            } else {
+                // Kuba Mode  
+                musicControl.textContent = '💛';
+                simcaMode.textContent = 'Simča Mode: Off';
+                kubaMode.textContent = 'Kuba Mode: On';
+                kubaMode.classList.add('active');
+                kubaMode.classList.remove('inactive');
+                simcaMode.classList.add('inactive');
+                simcaMode.classList.remove('active');
+            }
         }
 
         function createSmallPentagons() {
