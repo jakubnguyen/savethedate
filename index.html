@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Lato', sans-serif;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             overflow: hidden;
@@ -33,12 +33,12 @@
         .pentagon {
             width: 200px;
             height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #24b2ff 0%, #1e90ff 100%);
             position: absolute;
             cursor: pointer;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 20px 40px rgba(36, 178, 255, 0.3);
             z-index: 10;
             display: flex;
             justify-content: center;
@@ -47,7 +47,7 @@
 
         .pentagon:hover {
             transform: scale(1.1);
-            box-shadow: 0 30px 60px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 30px 60px rgba(36, 178, 255, 0.4);
         }
 
         .pentagon-text {
@@ -69,12 +69,12 @@
         .small-pentagon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #24b2ff 0%, #1e90ff 100%);
             position: absolute;
             clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
             cursor: grab;
             transition: transform 0.2s ease;
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 20px rgba(36, 178, 255, 0.3);
             z-index: 15;
         }
 
@@ -191,7 +191,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.8s ease;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #24b2ff 0%, #1e90ff 100%);
             color: white;
             text-align: center;
             z-index: 20;
@@ -235,17 +235,17 @@
         }
 
         .save-date-text {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
             font-size: 3rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 1rem;
             letter-spacing: 3px;
         }
 
         .date {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Inter', 'Segoe UI', 'Arial', sans-serif;
             font-size: 2.5rem;
-            font-weight: 400;
+            font-weight: 600;
             margin-bottom: 2rem;
             color: rgba(255, 255, 255, 0.9);
         }
@@ -272,16 +272,19 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 25px;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 15px 25px;
+            border-radius: 30px;
             color: white;
             font-weight: 600;
+            font-size: 16px;
             backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 25;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .progress.visible {
@@ -297,7 +300,7 @@
             width: 50px;
             height: 50px;
             border: none;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(30, 30, 30, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 50%;
             color: white;
@@ -308,11 +311,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .music-control:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(36, 178, 255, 0.8);
             transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .music-control.muted {
@@ -438,7 +444,7 @@
 
             <div class="save-date-text">Save the Date</div>
             <div class="names">Vaše jména zde</div>
-            <div class="date">Datum vaší svatby</div>
+            <div class="date">29. 08. 2026</div>
             <div class="details">
                 Bereme se a chceme, abyste tam byli!<br>
                 Více detailů bude následovat...
