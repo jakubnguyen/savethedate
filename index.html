@@ -106,7 +106,7 @@
             }
         }
 
-        /* Head with open mouth */
+        /* SVG Head with open mouth */
         .head-container {
             position: absolute;
             top: 50%;
@@ -123,37 +123,28 @@
             visibility: visible;
         }
 
-        .head {
+        .svg-head {
             width: 200px;
-            height: 200px;
-            background: #ffdbac;
-            border-radius: 50%;
-            position: relative;
-            border: 3px solid #e0c097;
+            height: 260px;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            object-fit: contain;
         }
 
-        .eye {
-            width: 20px;
-            height: 20px;
-            background: #333;
-            border-radius: 50%;
-            position: absolute;
-            top: 60px;
+        .svg-head:hover {
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3));
+            transform: scale(1.02);
         }
 
-        .eye.left { left: 50px; }
-        .eye.right { right: 50px; }
-
-        .mouth {
-            width: 80px;
-            height: 60px;
-            background: #333;
+        /* Target area for the mouth - invisible overlay */
+        .mouth-target {
             position: absolute;
-            bottom: 50px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 50%;
-            border: 3px solid #222;
+            width: 60px;
+            height: 40px;
+            /* Uncomment for debugging: */
+            /* background: rgba(255, 0, 0, 0.3); */
         }
 
         .arrow {
@@ -298,6 +289,36 @@
             visibility: visible;
         }
 
+        /* Music Control Button */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .music-control.muted {
+            opacity: 0.5;
+        }
+
         /* Mobile responsiveness */
         @media (max-width: 768px) {
             .pentagon {
@@ -329,6 +350,24 @@
                 top: -100px;
             }
 
+            .svg-head {
+                width: 150px;
+                height: 195px;
+            }
+
+            .mouth-target {
+                bottom: 60px;
+                width: 45px;
+                height: 30px;
+            }
+
+            .arrow {
+                top: -60px;
+                border-left: 15px solid transparent;
+                border-right: 15px solid transparent;
+                border-top: 30px solid #ff6b6b;
+            }
+
             .save-date-text {
                 font-size: 2rem;
             }
@@ -351,23 +390,36 @@
             }
         }
     </style>
-</head>
+    </head>
 <body>
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="your-song.mp3" type="audio/mpeg">
+        <source src="your-song.ogg" type="audio/ogg">
+        <!-- Fallback text -->
+        Váš prohlížeč nepodporuje audio.
+    </audio>
+    
+    <!-- Music Control Button -->
+    <button class="music-control" id="musicControl">
+        🔊
+    </button>
     <div class="container">
         <!-- Initial pentagon -->
         <div class="pentagon" id="mainPentagon">
             <div class="pentagon-text">Klikni na mě!</div>
         </div>
 
-        <!-- Head with mouth -->
+        <!-- Head with SVG -->
         <div class="head-container" id="headContainer">
             <div class="instruction">Nakrm mě všemi pentagony!</div>
             <div class="arrow"></div>
-            <div class="head">
-                <div class="eye left"></div>
-                <div class="eye right"></div>
-                <div class="mouth" id="mouth"></div>
-            </div>
+            
+            <!-- External SVG Head -->
+            <img src="head.svg" alt="Head with open mouth" class="svg-head">
+            
+            <!-- Invisible target area for collision detection -->
+            <div class="mouth-target" id="mouthTarget"></div>
         </div>
 
         <!-- Progress counter -->
@@ -397,19 +449,50 @@
     <script>
         const mainPentagon = document.getElementById('mainPentagon');
         const headContainer = document.getElementById('headContainer');
-        const mouth = document.getElementById('mouth');
+        const mouthTarget = document.getElementById('mouthTarget');
         const progress = document.getElementById('progress');
         const fedCountSpan = document.getElementById('fedCount');
         const finalContent = document.getElementById('finalContent');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const musicControl = document.getElementById('musicControl');
         
         let smallPentagons = [];
         let fedCount = 0;
         let isDragging = false;
         let dragElement = null;
         let gameStarted = false;
+        let musicPlaying = false;
 
         // Start the game
         mainPentagon.addEventListener('click', startGame);
+        
+        // Music control
+        musicControl.addEventListener('click', toggleMusic);
+
+        // Try to start music on first user interaction
+        document.addEventListener('click', startMusicOnInteraction, { once: true });
+
+        function startMusicOnInteraction() {
+            if (!musicPlaying) {
+                toggleMusic();
+            }
+        }
+
+        function toggleMusic() {
+            if (musicPlaying) {
+                backgroundMusic.pause();
+                musicControl.textContent = '🔇';
+                musicControl.classList.add('muted');
+                musicPlaying = false;
+            } else {
+                backgroundMusic.play().catch(e => {
+                    console.log('Autoplay prevented:', e);
+                });
+                musicControl.textContent = '🔊';
+                musicControl.classList.remove('muted');
+                musicPlaying = true;
+            }
+        }
 
         function startGame() {
             if (gameStarted) return;
@@ -511,7 +594,7 @@
         }
 
         function checkCollision(element, x, y) {
-            const mouthRect = mouth.getBoundingClientRect();
+            const mouthRect = mouthTarget.getBoundingClientRect();
             const mouthCenterX = mouthRect.left + mouthRect.width / 2;
             const mouthCenterY = mouthRect.top + mouthRect.height / 2;
             
@@ -519,7 +602,8 @@
                 Math.pow(x - mouthCenterX, 2) + Math.pow(y - mouthCenterY, 2)
             );
             
-            if (distance < 50) {
+            // Větší tolerance pro lepší UX
+            if (distance < 60) {
                 feedPentagon(element);
             }
         }
