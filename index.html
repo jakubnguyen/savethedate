@@ -1,4 +1,18 @@
-<!DOCTYPE html>
+.music-section {
+                bottom: 15px;
+                gap: 8px;
+            }
+
+            .music-control {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            .music-hint {
+                font-size: 12px;
+                padding: 8px 12px;
+            }<!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
@@ -81,7 +95,7 @@
             background: linear-gradient(135deg, #24b2ff 0%, #1e90ff 100%);
             position: absolute;
             clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-            cursor: grab;
+            cursor: pointer;
             transition: transform 0.2s ease;
             box-shadow: 0 10px 20px rgba(36, 178, 255, 0.3);
             z-index: 15;
@@ -91,13 +105,30 @@
             transform: scale(1.1);
         }
 
-        .small-pentagon:active {
-            cursor: grabbing;
-            transform: scale(0.9);
+        .small-pentagon.clicked {
+            animation: eatAnimation 0.5s ease forwards;
         }
 
-        .small-pentagon.eaten {
-            animation: eatAnimation 0.5s ease forwards;
+        .small-pentagon.moving {
+            animation: flyAround 4s linear infinite;
+        }
+
+        @keyframes flyAround {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            25% {
+                transform: translateX(100px) translateY(-50px);
+            }
+            50% {
+                transform: translateX(-50px) translateY(80px);
+            }
+            75% {
+                transform: translateX(-80px) translateY(-30px);
+            }
+            100% {
+                transform: translateX(0) translateY(0);
+            }
         }
 
         @keyframes eatAnimation {
@@ -205,6 +236,7 @@
             text-align: center;
             z-index: 20;
             padding: 2rem;
+            padding-bottom: 120px; /* Extra space for mobile controls */
         }
 
         .final-content.visible {
@@ -462,40 +494,32 @@
                 letter-spacing: 2px;
             }
 
-            .details {
-                font-size: 1rem;
-                padding: 0 1rem;
+            .final-content {
+                padding: 1rem;
+                padding-bottom: 100px;
+                padding-top: 140px; /* Space for mode indicators */
             }
 
             .photo-placeholder {
-                width: 220px;
-                height: 220px;
+                width: 180px;
+                height: 180px;
                 margin-bottom: 2rem;
             }
 
-            .music-section {
-                bottom: 15px;
-                gap: 8px;
-            }
-
-            .music-control {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
-            }
-
-            .music-hint {
-                font-size: 12px;
-                padding: 8px 12px;
+            .details {
+                font-size: 0.9rem;
+                padding: 0 1rem;
+                margin-bottom: 60px; /* Extra space above controls */
             }
 
             .mode-indicators {
-                top: 85px;
+                top: 20px; /* Move to very top on mobile */
             }
 
             .mode-indicator {
-                font-size: 11px;
-                padding: 4px 10px;
+                font-size: 10px;
+                padding: 3px 8px;
+                margin: 1px 0;
             }
         }
     </style>
@@ -534,7 +558,7 @@
 
         <!-- Head with SVG -->
         <div class="head-container" id="headContainer">
-            <div class="instruction">Nakrm mě všemi pentagony!</div>
+            <div class="instruction">Chyť všechny pentagony!</div>
             <div class="arrow"></div>
             
             <!-- External SVG Head -->
@@ -546,7 +570,7 @@
 
         <!-- Progress counter -->
         <div class="progress" id="progress">
-            Nakrmeno: <span id="fedCount">0</span>/10
+            Chyceno: <span id="fedCount">0</span>/10
         </div>
 
         <!-- Final content -->
@@ -685,13 +709,13 @@
             const container = document.querySelector('.container');
             
             // Safe area boundaries - avoid UI elements
-            const topSafeZone = 140; // Below mode indicators
-            const bottomSafeZone = 100; // Above music controls
-            const sideMargin = 60; // Margin from sides
+            const topSafeZone = 140;
+            const bottomSafeZone = 100;
+            const sideMargin = 60;
             
             for (let i = 0; i < 10; i++) {
                 const smallPentagon = document.createElement('div');
-                smallPentagon.className = 'small-pentagon';
+                smallPentagon.className = 'small-pentagon moving';
                 
                 // Random position within safe area
                 const x = sideMargin + Math.random() * (window.innerWidth - (sideMargin * 2) - 60);
@@ -700,8 +724,11 @@
                 smallPentagon.style.left = x + 'px';
                 smallPentagon.style.top = y + 'px';
                 
-                // Add drag functionality
-                addDragFunctionality(smallPentagon);
+                // Add click functionality instead of drag
+                addClickFunctionality(smallPentagon);
+                
+                // Random animation delay for more variety
+                smallPentagon.style.animationDelay = (Math.random() * 2) + 's';
                 
                 container.appendChild(smallPentagon);
                 smallPentagons.push(smallPentagon);
@@ -711,6 +738,33 @@
                     smallPentagon.style.opacity = '1';
                 }, i * 100);
             }
+        }
+
+        function addClickFunctionality(element) {
+            element.addEventListener('click', function(e) {
+                if (element.classList.contains('clicked')) return;
+                
+                e.preventDefault();
+                feedPentagon(element);
+            });
+        }
+
+        function feedPentagon(element) {
+            if (element.classList.contains('clicked')) return;
+            
+            element.classList.add('clicked');
+            element.classList.remove('moving');
+            fedCount++;
+            fedCountSpan.textContent = fedCount;
+            
+            // Remove element after animation
+            setTimeout(() => {
+                element.remove();
+                
+                if (fedCount >= 10) {
+                    showFinalContent();
+                }
+            }, 500);
         }
 
         function showHead() {
