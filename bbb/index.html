@@ -51,6 +51,7 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 }
 .pentagon.expanding::before{ opacity:1; }
 
+/* ── zbytek beze změny ── */
 .small-pentagon{ width:60px; height:60px; background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%); position:absolute; clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%); cursor:grab; transition:transform .2s ease; box-shadow:0 10px 20px rgba(36,178,255,.3); z-index:15; }
 .small-pentagon:hover{ transform:scale(1.1); }
 .small-pentagon:active{ cursor:grabbing; transform:scale(0.9); }
@@ -117,6 +118,7 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 </style>
 </head>
 <body>
+<!-- Hudba -->
 <audio id="track1" loop>
   <source src="song1.mp3" type="audio/mpeg">
   <source src="song1.ogg" type="audio/ogg">
@@ -126,8 +128,10 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
   <source src="song2.ogg" type="audio/ogg">
 </audio>
 
+<!-- Horní progress -->
 <div class="progress" id="progress">Nabito: <span id="fedCount">0</span>/10</div>
 
+<!-- Spodní ovladače -->
 <div class="mode-control-section" id="modeControlSection">
   <div class="mode-button active" id="simcaButton">Simča Mode</div>
   <div class="heart-indicator" id="heartIndicator">💜</div>
@@ -135,8 +139,11 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 </div>
 
 <div class="container">
+  <!-- START: velký pentagon se změněným chováním -->
   <div class="pentagon" id="mainPentagon"><div class="pentagon-text">Klikni na mě!</div></div>
+  <!-- END: velký pentagon -->
 
+  <!-- Hlava + cíl -->
   <div class="head-container" id="headContainer">
     <div class="instruction">Nakrm mě všemi pentagony!</div>
     <div class="arrow"></div>
@@ -144,8 +151,9 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
     <div class="mouth-target" id="mouthTarget"></div>
   </div>
 
+  <!-- Finální obrazovka -->
   <div class="final-content" id="finalContent">
-    <div class="photo-placeholder"><img src="./fotka.jpg?v=1" alt="Simča & Kuba"></div>
+    <div class="photo-placeholder"><img src="photo.jpg" alt="Simča & Kuba"></div>
     <div class="names">Simča & Kuba</div>
     <div class="date">29. 08. 2026</div>
     <div class="save-date-text"><span class="big-b">B</span>udeme se <span class="big-b">B</span>rát</div>
@@ -183,17 +191,29 @@ function startGame() {
   if (gameStarted) return;
   gameStarted = true;
 
-  mainPentagon.style.opacity = '0';
-  mainPentagon.style.transform = 'scale(0)';
+  // NOVĚ: nejdřív plynulý expand pentagonu + color crossfade (5s)
+  mainPentagon.classList.add('expanding');
 
-  startMusic();
-  showControls();
+  // Po dokončení animace (počkáme na šířku – 1x), teprve pokračuje původní flow
+  const onDone = (e) => {
+    if (e.propertyName !== 'width') return; // ignoruj ostatní transitionend
+    mainPentagon.removeEventListener('transitionend', onDone);
 
-  setTimeout(() => {
-    mainPentagon.style.display = 'none';
-    createSmallPentagons();
-    showHead();
-  }, 500);
+    // Schovej startovní pentagon (původní chování) a spusť hru
+    mainPentagon.style.opacity = '0';
+    mainPentagon.style.transform = 'scale(0)';
+
+    // Spustit hudbu a ukázat UI až po efektu (aby to plynule navázalo)
+    startMusic();
+    showControls();
+
+    setTimeout(() => {
+      mainPentagon.style.display = 'none';
+      createSmallPentagons();
+      showHead();
+    }, 200); // drobný nádech po animaci
+  };
+  mainPentagon.addEventListener('transitionend', onDone);
 }
 
 function startMusic() {
@@ -208,7 +228,7 @@ function showControls() {
   setTimeout(() => {
     modeControlSection.classList.add('visible');
     progress.classList.add('visible');
-  }, 1000);
+  }, 300);
 }
 
 function switchToMode(mode) {
@@ -241,7 +261,7 @@ function updateModeDisplay() {
   }
 }
 
-/* ===== DYNAMICKÉ MĚŘENÍ DEADZON ===== */
+/* ===== DYNAMICKÉ MĚŘENÍ DEADZON (beze změny) ===== */
 function measureSmallPentagonSize() {
   const probe = document.createElement('div');
   probe.className = 'small-pentagon';
@@ -263,14 +283,13 @@ function getSpawnBounds(pW, pH) {
   const progressRect = progress.getBoundingClientRect();
   const modeRect = modeControlSection.getBoundingClientRect();
 
-  const gapTop = 8;     // „těsně“ pod horním prvkem
-  const gapBottom = 8;  // „těsně“ nad spodním prvkem
-  const sidePad = 2;    // skoro žádná deadzone po stranách
+  const gapTop = 8;
+  const gapBottom = 8;
+  const sidePad = 2;
 
   let minY = Math.max(0, progressRect.bottom + gapTop);
   let maxY = Math.min(vpH - pH, modeRect.top - gapBottom - pH);
 
-  // Fallback pro velmi malé obrazovky / horizontály
   if (maxY <= minY) {
     minY = 8;
     maxY = Math.max(8, vpH - pH - 8);
@@ -285,8 +304,6 @@ function getSpawnBounds(pW, pH) {
 
 function createSmallPentagons() {
   const container = document.querySelector('.container');
-
-  // Změř aktuální velikost pentagonu (respektuje media queries)
   const { w: pW, h: pH } = measureSmallPentagonSize();
   const { minX, maxX, minY, maxY } = getSpawnBounds(pW, pH);
 
@@ -294,7 +311,6 @@ function createSmallPentagons() {
     const smallPentagon = document.createElement('div');
     smallPentagon.className = 'small-pentagon';
 
-    // Náhodná pozice v dynamickém „koridoru“
     const x = minX + Math.random() * Math.max(1, (maxX - minX));
     const y = minY + Math.random() * Math.max(1, (maxY - minY));
 
