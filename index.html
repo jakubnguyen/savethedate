@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Save the Date</title>
-    <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Forum', serif;
+            font-family: 'Cardo', serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             overflow: hidden;
@@ -62,7 +62,7 @@
         .pentagon-text {
             color: white;
             font-size: 16px;
-            font-weight: 300;
+            font-weight: 400;
             letter-spacing: 2px;
             text-transform: uppercase;
             text-align: center;
@@ -98,28 +98,6 @@
 
         .small-pentagon.eaten {
             animation: eatAnimation 0.5s ease forwards;
-        }
-
-        .small-pentagon.moving {
-            animation: flyAround 4s linear infinite;
-        }
-
-        @keyframes flyAround {
-            0% {
-                transform: translateX(0) translateY(0);
-            }
-            25% {
-                transform: translateX(100px) translateY(-50px);
-            }
-            50% {
-                transform: translateX(-50px) translateY(80px);
-            }
-            75% {
-                transform: translateX(-80px) translateY(-30px);
-            }
-            100% {
-                transform: translateX(0) translateY(0);
-            }
         }
 
         @keyframes eatAnimation {
@@ -174,8 +152,6 @@
             transform: translateX(-50%);
             width: 60px;
             height: 40px;
-            /* Uncomment for debugging: */
-            /* background: rgba(255, 0, 0, 0.3); */
         }
 
         .arrow {
@@ -260,24 +236,26 @@
         .photo-text {
             color: rgba(255, 255, 255, 0.8);
             font-size: 16px;
-            font-weight: 300;
+            font-weight: 400;
         }
 
         .save-date-text {
-            font-family: 'Forum', serif;
-            font-size: 3rem;
+            font-family: 'Cardo', serif;
+            font-size: 2.5rem;
             font-weight: 400;
             margin-bottom: 1rem;
             letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .save-date-text .big-b {
-            font-size: 3.5rem;
-            font-weight: 400;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
         }
 
         .date {
-            font-family: 'Forum', serif;
+            font-family: 'Cardo', serif;
             font-size: 2.5rem;
             font-weight: 400;
             margin-bottom: 2rem;
@@ -286,7 +264,7 @@
 
         .names {
             font-size: 1.5rem;
-            font-weight: 300;
+            font-weight: 400;
             letter-spacing: 4px;
             text-transform: uppercase;
             margin-bottom: 2rem;
@@ -295,7 +273,7 @@
 
         .details {
             font-size: 1.2rem;
-            font-weight: 300;
+            font-weight: 400;
             line-height: 1.6;
             max-width: 600px;
             color: rgba(255, 255, 255, 0.7);
@@ -304,8 +282,7 @@
         .progress {
             position: fixed;
             top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 20px;
             background: rgba(30, 30, 30, 0.9);
             padding: 15px 25px;
             border-radius: 30px;
@@ -333,9 +310,8 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -387,9 +363,8 @@
         /* Mode Indicators */
         .mode-indicators {
             position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 20px;
+            left: 20px;
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -418,7 +393,7 @@
         }
 
         .mode-indicator.active {
-            font-weight: bold;
+            font-weight: 700;
             background: rgba(36, 178, 255, 0.9);
             border-color: rgba(255, 255, 255, 0.3);
         }
@@ -468,11 +443,11 @@
             }
 
             .save-date-text {
-                font-size: 2.2rem;
+                font-size: 1.9rem;
             }
 
             .save-date-text .big-b {
-                font-size: 2.8rem;
+                font-size: 1.9rem;
             }
 
             .date {
@@ -495,9 +470,26 @@
                 margin-bottom: 2rem;
             }
 
+            .progress {
+                top: 15px;
+                right: 15px;
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+
+            .mode-indicators {
+                top: 15px;
+                left: 15px;
+            }
+
+            .mode-indicator {
+                font-size: 11px;
+                padding: 5px 12px;
+            }
+
             .music-section {
                 bottom: 15px;
-                gap: 8px;
+                gap: 12px;
             }
 
             .music-control {
@@ -510,14 +502,16 @@
                 font-size: 12px;
                 padding: 8px 12px;
             }
+        }
 
-            .mode-indicators {
-                top: 85px;
+        /* Desktop spacing adjustments */
+        @media (min-width: 1200px) {
+            .progress {
+                right: 60px;
             }
 
-            .mode-indicator {
-                font-size: 11px;
-                padding: 4px 10px;
+            .mode-indicators {
+                left: 60px;
             }
         }
     </style>
@@ -534,18 +528,23 @@
         <source src="song2.ogg" type="audio/ogg">
     </audio>
 
-    <!-- Music Control Section -->
-    <div class="music-section" id="musicSection">
-        <div class="music-hint" id="musicHint">Klikni pro změnu módu</div>
-        <div class="music-control" id="musicControl">
-            💜
-        </div>
-    </div>
-
-    <!-- Mode Indicators -->
+    <!-- Mode Indicators - Top Left -->
     <div class="mode-indicators" id="modeIndicators">
         <div class="mode-indicator active" id="simcaMode">Simča Mode: On</div>
         <div class="mode-indicator inactive" id="kubaMode">Kuba Mode: Off</div>
+    </div>
+
+    <!-- Progress Counter - Top Right -->
+    <div class="progress" id="progress">
+        Nakrmeno: <span id="fedCount">0</span>/10
+    </div>
+
+    <!-- Music Control Section - Bottom Center -->
+    <div class="music-section" id="musicSection">
+        <div class="music-control" id="musicControl">
+            💜
+        </div>
+        <div class="music-hint" id="musicHint">Klikni pro změnu módu</div>
     </div>
     
     <div class="container">
@@ -566,11 +565,6 @@
             <div class="mouth-target" id="mouthTarget"></div>
         </div>
 
-        <!-- Progress counter -->
-        <div class="progress" id="progress">
-            Nakrmeno: <span id="fedCount">0</span>/10
-        </div>
-
         <!-- Final content -->
         <div class="final-content" id="finalContent">
             <div class="photo-placeholder">
@@ -578,14 +572,14 @@
                 <!-- Fallback: <div class="photo-text">Vaše foto zde</div> -->
             </div>
 
+            <div class="names">Simča & Kuba</div>
+            <div class="date">29. 08. 2026</div>
             <div class="save-date-text">
                 <span class="big-b">B</span>udeme se <span class="big-b">B</span>rát
             </div>
-            <div class="names">Simča & Kuba</div>
-            <div class="date">29. 08. 2026</div>
             <div class="details">
-                Bereme se a chceme, abyste tam byli!<br>
-                Více detailů bude následovat...
+                A bez tebe by to nebylo ono.<br>
+                Budeme rádi, když si na nás v tento den uděláš čas ☺️
             </div>
         </div>
     </div>
@@ -652,6 +646,7 @@
             setTimeout(() => {
                 musicSection.classList.add('visible');
                 modeIndicators.classList.add('visible');
+                progress.classList.add('visible');
             }, 1000);
         }
 
@@ -713,7 +708,7 @@
             
             for (let i = 0; i < 10; i++) {
                 const smallPentagon = document.createElement('div');
-                smallPentagon.className = 'small-pentagon moving';
+                smallPentagon.className = 'small-pentagon';
                 
                 // Random position within safe area
                 const x = sideMargin + Math.random() * (window.innerWidth - (sideMargin * 2) - 60);
@@ -724,9 +719,6 @@
                 
                 // Add drag functionality
                 addDragFunctionality(smallPentagon);
-                
-                // Random animation delay for more variety
-                smallPentagon.style.animationDelay = (Math.random() * 2) + 's';
                 
                 container.appendChild(smallPentagon);
                 smallPentagons.push(smallPentagon);
@@ -741,7 +733,6 @@
         function showHead() {
             setTimeout(() => {
                 headContainer.classList.add('visible');
-                progress.classList.add('visible');
             }, 1000);
         }
 
@@ -814,7 +805,6 @@
             if (element.classList.contains('eaten')) return;
             
             element.classList.add('eaten');
-            element.classList.remove('moving'); // Stop movement animation
             fedCount++;
             fedCountSpan.textContent = fedCount;
             
