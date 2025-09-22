@@ -245,7 +245,7 @@ font-size: 2.5rem;
 font-weight: 400;
 margin-bottom: 1rem;
 letter-spacing: 2px;
-color: rgba(255, 255, 255, 0.9);
+color: white;
 }
 
 .save-date-text .big-b {
@@ -259,7 +259,7 @@ font-family: 'Cardo', serif;
 font-size: 2.5rem;
 font-weight: 400;
 margin-bottom: 2rem;
-color: rgba(255, 255, 255, 0.9);
+color: white;
 }
 
 .names {
@@ -268,7 +268,7 @@ font-weight: 400;
 letter-spacing: 4px;
 text-transform: uppercase;
 margin-bottom: 2rem;
-color: rgba(255, 255, 255, 0.8);
+color: white;
 }
 
 .details {
@@ -276,7 +276,7 @@ font-size: 1.2rem;
 font-weight: 400;
 line-height: 1.6;
 max-width: 600px;
-color: rgba(255, 255, 255, 0.7);
+color: white;
 }
 
 /* Progress Counter - Top Center */
@@ -305,7 +305,7 @@ opacity: 1;
 visibility: visible;
 }
 
-/* Mode Control Section - Bottom Center */
+/* Mode Control Section - Bottom Center - FIXED VERSION */
 .mode-control-section {
 position: fixed;
 bottom: 20px;
@@ -313,7 +313,7 @@ left: 50%;
 transform: translateX(-50%);
 display: flex;
 align-items: center;
-gap: 20px;
+gap: 16px;
 opacity: 0;
 visibility: hidden;
 transition: all 0.3s ease;
@@ -326,9 +326,11 @@ visibility: visible;
 }
 
 .mode-button {
+min-width: 140px;
+height: 48px;
 background: rgba(30, 30, 30, 0.9);
 color: white;
-padding: 12px 20px;
+padding: 0 18px;
 border-radius: 25px;
 font-size: 14px;
 backdrop-filter: blur(10px);
@@ -338,11 +340,20 @@ cursor: pointer;
 transition: all 0.3s ease;
 font-family: 'Cardo', serif;
 text-transform: capitalize;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+letter-spacing: 0.3px;
 }
 
 .mode-button:hover {
 transform: scale(1.05);
 border-color: rgba(255, 255, 255, 0.3);
+}
+
+.mode-button:active {
+transform: scale(0.98);
 }
 
 .mode-button.active {
@@ -356,9 +367,60 @@ color: #888;
 background: rgba(60, 60, 60, 0.7);
 }
 
+/* Heart with exact styling from attachment */
 .heart-indicator {
-font-size: 30px;
+width: 52px;
+height: 52px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(30, 30, 30, 0.9);
+border: 2px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+font-size: 22px;
+user-select: none;
 transition: all 0.3s ease;
+}
+
+/* Responsive scaling for mode controls */
+@media (max-width: 480px) {
+.mode-control-section {
+bottom: 15px;
+gap: 12px;
+}
+
+.mode-button {
+min-width: 120px;
+height: 44px;
+font-size: 13px;
+padding: 0 14px;
+}
+
+.heart-indicator {
+width: 48px;
+height: 48px;
+font-size: 20px;
+}
+}
+
+@media (max-width: 600px) and (min-width: 481px) {
+.mode-control-section {
+gap: 14px;
+}
+
+.mode-button {
+min-width: 130px;
+height: 46px;
+font-size: 13px;
+padding: 0 16px;
+}
+
+.heart-indicator {
+width: 50px;
+height: 50px;
+font-size: 21px;
+}
 }
 
 /* Mobile responsiveness */
@@ -433,20 +495,6 @@ top: 15px;
 padding: 10px 18px;
 font-size: 14px;
 }
-
-.mode-control-section {
-bottom: 15px;
-gap: 15px;
-}
-
-.mode-button {
-font-size: 12px;
-padding: 10px 16px;
-}
-
-.heart-indicator {
-font-size: 25px;
-}
 }
 </style>
 </head>
@@ -464,7 +512,7 @@ font-size: 25px;
 
 <!-- Progress Counter - Top Center -->
 <div class="progress" id="progress">
-    Nabito: <span id="fedCount">0</span>/10
+Nabito: <span id="fedCount">0</span>/10
 </div>
 
 <!-- Mode Control Section - Bottom Center -->
