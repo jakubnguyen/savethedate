@@ -4,29 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Nguyenovi</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rouge+Script&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --blue: #1e3a8a; /* tmavě modrá z "Budeme se Brát" */
-    }
+    :root { --blue: #1e3a8a; }
     html, body {
       height: 100%;
       margin: 0;
-      background: var(--blue);
+      background: #ffffff;
     }
     body {
       display: grid;
       place-items: center;
-      font-family: 'Cardo', serif;
+      font-family: 'Rouge Script', cursive;
     }
     .title {
-      color: #ffffff;
-      font-weight: 700;
-      /* velké, ale ne přes celou obrazovku */
-      font-size: clamp(40px, 10vw, 120px);
-      letter-spacing: 0.5px;
-      text-align: center;
+      color: var(--blue);
+      font-weight: 400;           /* Rouge Script je dobře čitelné i bez boldu */
+      font-size: clamp(48px, 12vw, 140px);
       line-height: 1.05;
+      text-align: center;
       margin: 0 4vw;
     }
   </style>
