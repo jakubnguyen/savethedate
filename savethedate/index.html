@@ -1,307 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Save the Date</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Save the Date — Heart Intro & Final</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      /* Gradient pro OBOU scén (shora → střed → dole) */
+      --bg-top:#e5b7d4;
+      --bg-mid:#bfb8da;
+      --bg-bot:#7facd6;
+      --white:#ffffff;
+      --heart:#a5678e; /* barva srdce */
+      --ease:cubic-bezier(.2,.8,.2,1);
+      --expand-ms:800ms;
+    }
+    *{box-sizing:border-box;margin:0}
+    html,body{height:100%}
+    body{
+      min-height:100vh; overflow:hidden; user-select:none;
+      font-family:'Cardo',serif; color:var(--white);
+      background: linear-gradient(180deg,var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg-bot) 100%);
+    }
+    .stage{position:relative; height:100vh; display:grid; place-items:center}
 
-<!-- Základní meta tagy -->
-<meta name="description" content="Simča a Kuba se budou brát 29. srpna 2026!">
+    /* === ÚVOD: SRDCE === */
+    .intro{position:fixed; inset:0; display:grid; place-items:center; z-index:5;}
+    .heart-wrap{ position:relative; width:286px; height:286px; cursor:pointer; }
+    /* Použijeme SVG, ať je tvar vždy perfektní */
+    .heart{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:364px; height:364px; transition: width var(--expand-ms) var(--ease), height var(--expand-ms) var(--ease); }
+    .heart svg{ width:100%; height:100%; display:block; }
+    .heart path{ fill: var(--heart); }
+    .heart svg{ width:100%; height:100%; display:block; }
+    .heart path{ fill: var(--heart); }
 
-<!-- Open Graph: použij absolutní URL -->
-<meta property="og:title" content="Save the Date - Simča & Kuba">
-<meta property="og:description" content="Budeme se brát 29. srpna 2026! 💜">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://nguyenovi.cz/bb/">
-<meta property="og:image" content="https://nguyenovi.cz/bb/fotka.jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Simča & Kuba — Save the Date">
+    .cta{ position:absolute; left:50%; top:45%; transform:translate(-50%,-45%); width:auto; text-align:center; font-size:20px; letter-spacing:1.2px; text-transform:uppercase; opacity:.95; transition:opacity 160ms ease; pointer-events:none; white-space:nowrap; }
+    .heart-wrap.clicked .cta{ opacity:0; }
 
-<!-- Twitter / X -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Save the Date - Simča & Kuba">
-<meta name="twitter:description" content="Budeme se brát 29. srpna 2026! 💜">
-<meta name="twitter:image" content="https://nguyenovi.cz/bb/fotka.jpg">
+    /* expand na velikost, která zaručeně pokryje viewport */
+    .heart-wrap.expanding .heart{ width:220vmax; height:220vmax; }
 
-<link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet">
-<style>
-* { 
-  margin: 0; 
-  padding: 0; 
-  box-sizing: border-box; 
-}
+    /* === FINÁLNÍ OBSAH – převzatý z originálu, jen bez vlastního pozadí === */
+    .final-content{ position:fixed; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center; opacity:0; visibility:hidden; transition:opacity 420ms ease; /* žádné background – necháme global gradient */ color:var(--white); text-align:center; z-index:10; padding:2rem; }
+    .final-content.visible{ opacity:1; visibility:visible; }
+    .photo-placeholder{ width:280px; height:280px; background:rgba(255,255,255,.12); border-radius:50%; margin-bottom:2.4rem; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(10px); border:2px solid rgba(255,255,255,.25); position:relative; overflow:hidden; flex-shrink:0; }
+    .photo-placeholder img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .names{ font-size:1.5rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:1.3rem; color:var(--heart); font-weight:400;  font-weight:400; }
+    .date{ font-size:2.5rem; margin-bottom:1.2rem; color:var(--heart); font-weight:400; }
+    .headline{ font-size:2.5rem; margin:.4rem 0 .9rem; letter-spacing:2px; color:var(--white); font-weight:400; }}
+    .details{ font-size:2rem; line-height:1.6; max-width:600px; color:var(--white); }
 
-body { 
-  font-family: 'Cardo', serif; 
-  background: linear-gradient(180deg, #e5b7d4 0%, #bfb8da 50%, #7facd6 100%);
-  min-height: 100vh; 
-  overflow: hidden; 
-  user-select: none;
-}
-
-.container { 
-  position: relative; 
-  width: 100%; 
-  height: 100vh; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-}
-
-/* Srdce pomocí CSS clip-path */
-.heart {
-  position: fixed; 
-  left: 50%; 
-  top: 50%;
-  width: 200px; 
-  height: 180px;
-  transform: translate(-50%, -50%);
-  background: #a5678e;
-  cursor: pointer; 
-  z-index: 100; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center;
-  clip-path: path("M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5 C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3 C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z");
-  transform-origin: center center;
-  will-change: width, height, transform;
-  transition: width 1800ms ease-out, height 1800ms ease-out;
-  box-shadow: 0 20px 40px rgba(165, 103, 142, 0.3);
-}
-
-.heart:hover { 
-  transform: translate(-50%, -50%) scale(1.05); 
-  box-shadow: 0 30px 60px rgba(165, 103, 142, 0.4); 
-}
-
-/* Text s mizením */
-.heart-text { 
-  color: #fff; 
-  font-size: 16px; 
-  letter-spacing: 2px; 
-  text-transform: uppercase; 
-  text-align: center; 
-  animation: pulse 2s infinite; 
-  opacity: 1;
-  position: relative; 
-  z-index: 2;
-}
-
-@keyframes pulse { 
-  0%, 100% { opacity: 0.7; } 
-  50% { opacity: 1; } 
-}
-
-/* Text zmizí okamžitě po kliknutí */
-.heart.clicked .heart-text { 
-  opacity: 0 !important; 
-  animation: none !important;
-  transition: none !important;
-}
-
-/* Srdce se roztáhne po celé obrazovce */
-.heart.expanding {
-  width: 220vmax; 
-  height: 198vmax; /* zachování poměru stran srdce */
-  transform: translate(-50%, -50%);
-  background: #a5678e;
-  box-shadow: none;
-}
-
-/* Finální obrazovka */
-.final-content { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 100%; 
-  display: flex; 
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center; 
-  opacity: 0; 
-  visibility: hidden; 
-  transition: all 0.8s ease; 
-  background: #a5678e;
-  color: #fff; 
-  text-align: center; 
-  z-index: 20; 
-  padding: 2rem; 
-}
-
-.final-content.visible { 
-  opacity: 1; 
-  visibility: visible; 
-}
-
-.photo-placeholder { 
-  width: 280px; 
-  height: 280px; 
-  background: rgba(255, 255, 255, 0.1); 
-  border-radius: 50%; 
-  margin-bottom: 3rem; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  backdrop-filter: blur(10px); 
-  border: 2px solid rgba(255, 255, 255, 0.2); 
-  position: relative; 
-  overflow: hidden; 
-  flex-shrink: 0; 
-}
-
-.photo-placeholder img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-  border-radius: 50%; 
-}
-
-.names { 
-  font-size: 1.5rem; 
-  letter-spacing: 4px; 
-  text-transform: uppercase; 
-  margin-bottom: 1.2rem; 
-  color: #fff; 
-  font-weight: 400;
-}
-
-.date { 
-  font-size: 2.5rem; 
-  margin-bottom: 1.5rem; 
-  color: #fff; 
-  font-weight: 400;
-}
-
-.save-date-text { 
-  font-size: 2.5rem; 
-  margin-bottom: 1rem; 
-  letter-spacing: 2px; 
-  color: #fff; 
-  font-family: 'Cardo', serif; 
-  font-weight: 400;
-}
-
-.save-date-text .big-b { 
-  font-weight: 400; /* netučně */
-  color: #fff; /* bíle */
-  text-transform: uppercase; 
-}
-
-.save-date-text .small-b { 
-  font-weight: 400; /* netučně */
-  color: #fff; /* bíle */
-  text-transform: lowercase; /* malé b */
-}
-
-.details { 
-  font-size: 1.2rem; 
-  line-height: 1.6; 
-  max-width: 600px; 
-  color: #fff; 
-  font-weight: 400;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .heart { 
-    width: 150px; 
-    height: 135px; 
-  }
-  
-  .heart-text { 
-    font-size: 12px; 
-  }
-  
-  .photo-placeholder { 
-    width: 220px; 
-    height: 220px; 
-    margin-bottom: 2rem; 
-  }
-  
-  .save-date-text { 
-    font-size: 1.9rem; 
-  }
-  
-  .date { 
-    font-size: 1.8rem; 
-  }
-  
-  .names { 
-    font-size: 1.2rem; 
-    letter-spacing: 2px; 
-  }
-  
-  .details { 
-    font-size: 1rem; 
-    padding: 0 1rem; 
-  }
-}
-</style>
+    @media (max-width:768px){
+      .heart{ width:150px; height:150px; }
+      .photo-placeholder{ width:220px; height:220px; margin-bottom:1.8rem; }
+      .names{ font-size:1.2rem; letter-spacing:2px; margin-bottom:1rem; }
+      .date{ font-size:1.9rem; margin-bottom:.9rem; }
+      .headline{ font-size:2rem; margin:.3rem 0 .7rem; }
+      .details{ font-size:1.8rem; padding:0 1rem; }
+    }
+  </style>
 </head>
 <body>
-<!-- Hudba -->
-<audio id="track1" loop>
-  <source src="song1.mp3" type="audio/mpeg">
-  <source src="song1.ogg" type="audio/ogg">
-</audio>
+  <!-- jen song1, začne hrát po kliku -->
+  <audio id="track1" preload="auto">
+    <source src="song1.mp3" type="audio/mpeg" />
+    <source src="song1.ogg" type="audio/ogg" />
+  </audio>
 
-<div class="container">
-  <!-- Srdce -->
-  <div class="heart" id="mainHeart">
-    <div class="heart-text">Klikni na mě!</div>
-  </div>
+  <!-- Úvodní scéna: srdce -->
+  <section class="intro">
+    <div id="heartWrap" class="heart-wrap" aria-label="Klikni na mě">
+      <div class="heart" id="heart">
+        <!-- čisté SVG srdce -->
+        <svg viewBox="0 0 512 512" aria-hidden="true" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision"><path d="M256 464c-7.7 0-15.1-3-20.6-8.5L67.9 287.6C2.1 221.9 7.6 115.6 86.5 69.3c50.6-29.6 116.6-18.8 158 21.9L256 101l11.5-9.8c41.4-40.8 107.4-51.5 158-21.9 78.9 46.3 84.4 152.6 18.6 218.3L276.6 455.5c-5.5 5.5-12.9 8.5-20.6 8.5z"/></svg>
+      </div>
+      <div class="cta">Klikni na mě</div>
+    </div>
+  </section>
 
-  <!-- Finální obrazovka -->
-  <div class="final-content" id="finalContent">
+  <!-- Finální scéna – stejná struktura jako originál, jen bílé a netučné -->
+  <section class="final-content" id="finalContent" aria-hidden="true">
     <div class="photo-placeholder">
-      <img src="fotka.jpg" alt="Simča & Kuba">
+      <img src="photo.jpg" alt="Simča & Kuba" />
     </div>
     <div class="names">Simča & Kuba</div>
     <div class="date">29. 08. 2026</div>
-    <div class="save-date-text">
-      <span class="big-b">B</span>udeme se <span class="small-b">b</span>rát
-    </div>
+    <div class="headline">Budeme se brát</div>
     <div class="details">
       A bez tebe by to nebylo ono.<br>
-      Budeme rádi, když si na nás v tento den uděláš čas
+      Budeme rádi, když si na nás v tento den uděláš čas ☺️
     </div>
-  </div>
-</div>
+  </section>
 
-<script>
-const mainHeart = document.getElementById('mainHeart');
-const finalContent = document.getElementById('finalContent');
-const track1 = document.getElementById('track1');
+  <script>
+    const wrap = document.getElementById('heartWrap');
+    const heart = document.getElementById('heart');
+    const final = document.getElementById('finalContent');
+    const audio = document.getElementById('track1');
 
-let gameStarted = false;
+    function showFinal(){
+      final.classList.add('visible');
+      // skryj intro, ať nic nepřekáží
+      wrap.style.display = 'none';
+    }
 
-mainHeart.addEventListener('click', startGame);
+    wrap.addEventListener('click', () => {
+      if(wrap.classList.contains('expanding')) return;
+      wrap.classList.add('clicked');
+      // hudba startuje hned po kliku
+      audio.currentTime = 0; audio.play().catch(()=>{});
+      // spustíme expanzi srdce
+      wrap.classList.add('expanding');
 
-function startGame() {
-  if (gameStarted) return;
-  gameStarted = true;
-
-  // Text zmizí okamžitě
-  mainHeart.classList.add('clicked');
-  
-  // Spustit hudbu
-  track1.play().catch(() => {});
-  
-  // Srdce začne růst
-  mainHeart.classList.add('expanding');
-
-  // Po 1.2s přejít na finální obrazovku
-  setTimeout(() => {
-    mainHeart.style.display = 'none';
-    finalContent.classList.add('visible');
-  }, 1200);
-}
-
-// Zabránit defaultnímu drag chování
-document.addEventListener('dragstart', e => e.preventDefault());
-</script>
+      // navázání na konec animace (šířka/výška) + bezpečný fallback
+      const D = 800; // v souladu s --expand-ms
+      let done=false;
+      const onEnd = (e) => {
+        if(done) return; if(e.target!==heart) return;
+        if(e.propertyName!=='width' && e.propertyName!=='height') return;
+        done=true; heart.removeEventListener('transitionend', onEnd); showFinal();
+      };
+      heart.addEventListener('transitionend', onEnd);
+      setTimeout(()=>{ if(!done){ done=true; heart.removeEventListener('transitionend', onEnd); showFinal(); } }, D+80);
+    });
+  </script>
 </body>
 </html>
