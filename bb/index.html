@@ -6,18 +6,55 @@
 <title>Save the Date</title>
 <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ... TVÉ PŮVODNÍ STYLY BEZE ZMĚNY ... */
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Cardo',serif; background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%); min-height:100vh; overflow:hidden; user-select:none; transition:background .8s ease; }
 body.simca-mode{ background:linear-gradient(135deg,#d7b0ff 0%,#c9a0ff 100%); }
 body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 .container{ position:relative; width:100%; height:100vh; display:flex; justify-content:center; align-items:center; }
 
-.pentagon{ width:200px; height:200px; background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%); position:absolute; cursor:pointer; transition:all .8s cubic-bezier(0.4,0,0.2,1); clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%); box-shadow:0 20px 40px rgba(36,178,255,.3); z-index:10; display:flex; justify-content:center; align-items:center; }
-.pentagon:hover{ transform:scale(1.1); box-shadow:0 30px 60px rgba(36,178,255,.4); }
-.pentagon-text{ color:#fff; font-size:16px; letter-spacing:2px; text-transform:uppercase; text-align:center; animation:pulse 2s infinite; }
+/* ── PRVNÍ SCÉNA: opravený pentagon ── */
+.pentagon{
+  position:fixed; left:50%; top:50%;
+  width:200px; height:200px;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%);
+  box-shadow:0 20px 40px rgba(36,178,255,.3);
+  clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);
+  cursor:pointer; z-index:100; display:flex; justify-content:center; align-items:center;
+  will-change:width,height;
+  transition:
+    width 1800ms ease-out,
+    height 1800ms ease-out,
+    box-shadow 1000ms ease;
+}
+.pentagon:hover{ transform:translate(-50%,-50%) scale(1.05); box-shadow:0 30px 60px rgba(36,178,255,.4); }
+
+/* Text s okamžitým mizením */
+.pentagon-text{ 
+  color:#fff; font-size:16px; letter-spacing:2px; text-transform:uppercase; text-align:center; 
+  animation:pulse 2s infinite; opacity:1;
+  position:relative; z-index:2;
+}
 @keyframes pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
 
+/* Text zmizí OKAMŽITĚ po kliknutí */
+.pentagon.clicked .pentagon-text { 
+  opacity:0 !important; 
+  animation:none !important;
+  transition:none !important;
+}
+
+/* Pentagon roste ale zůstává MODRÝ */
+.pentagon.expanding{
+  width:220vmax; 
+  height:220vmax;
+  clip-path:polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  transform:translate(-50%,-50%);
+  background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%);
+  box-shadow:none;
+}
+
+/* ── zbytek beze změny ── */
 .small-pentagon{ width:60px; height:60px; background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%); position:absolute; clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%); cursor:grab; transition:transform .2s ease; box-shadow:0 10px 20px rgba(36,178,255,.3); z-index:15; }
 .small-pentagon:hover{ transform:scale(1.1); }
 .small-pentagon:active{ cursor:grabbing; transform:scale(0.9); }
@@ -84,6 +121,7 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 </style>
 </head>
 <body>
+<!-- Hudba -->
 <audio id="track1" loop>
   <source src="song1.mp3" type="audio/mpeg">
   <source src="song1.ogg" type="audio/ogg">
@@ -93,8 +131,10 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
   <source src="song2.ogg" type="audio/ogg">
 </audio>
 
+<!-- Horní progress -->
 <div class="progress" id="progress">Nabito: <span id="fedCount">0</span>/10</div>
 
+<!-- Spodní ovladače -->
 <div class="mode-control-section" id="modeControlSection">
   <div class="mode-button active" id="simcaButton">Simča Mode</div>
   <div class="heart-indicator" id="heartIndicator">💜</div>
@@ -102,8 +142,11 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 </div>
 
 <div class="container">
+  <!-- START: velký pentagon s OKAMŽITÝM mizením textu -->
   <div class="pentagon" id="mainPentagon"><div class="pentagon-text">Klikni na mě!</div></div>
+  <!-- END: velký pentagon -->
 
+  <!-- Hlava + cíl -->
   <div class="head-container" id="headContainer">
     <div class="instruction">Nakrm mě všemi pentagony!</div>
     <div class="arrow"></div>
@@ -111,8 +154,9 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
     <div class="mouth-target" id="mouthTarget"></div>
   </div>
 
+  <!-- Finální obrazovka -->
   <div class="final-content" id="finalContent">
-    <div class="photo-placeholder"><img src="./fotka.jpg?v=1" alt="Simča & Kuba"></div>
+    <div class="photo-placeholder"><img src="photo.jpg" alt="Simča & Kuba"></div>
     <div class="names">Simča & Kuba</div>
     <div class="date">29. 08. 2026</div>
     <div class="save-date-text"><span class="big-b">B</span>udeme se <span class="big-b">B</span>rát</div>
@@ -140,7 +184,7 @@ let isDragging = false;
 let dragElement = null;
 let gameStarted = false;
 let musicStarted = false;
-let currentTrack = 1; // 1 = Simča Mode, 2 = Kuba Mode
+let currentTrack = 1;
 
 mainPentagon.addEventListener('click', startGame);
 simcaButton.addEventListener('click', () => switchToMode(1));
@@ -150,24 +194,28 @@ function startGame() {
   if (gameStarted) return;
   gameStarted = true;
 
-  mainPentagon.style.opacity = '0';
-  mainPentagon.style.transform = 'scale(0)';
+  // OPRAVENO: Text zmizí OKAMŽITĚ
+  mainPentagon.classList.add('clicked');
+  
+  // Pentagon začne růst
+  mainPentagon.classList.add('expanding');
 
-  startMusic();
-  showControls();
-
+  // OPRAVENO: Kratší čekání - 1.5s místo čekání na transitionend
   setTimeout(() => {
+    // Pentagon zmizí a hra začne RYCHLE
     mainPentagon.style.display = 'none';
+    document.body.classList.add('simca-mode'); // Nastavit fialové pozadí
+    startMusic();
+    showControls();
     createSmallPentagons();
     showHead();
-  }, 500);
+  }, 1500); // Pentagon je vizuálně "hotový" před koncem animace
 }
 
 function startMusic() {
   if (!musicStarted) {
     musicStarted = true;
     track1.play().catch(()=>{});
-    document.body.classList.add('simca-mode');
   }
 }
 
@@ -175,7 +223,7 @@ function showControls() {
   setTimeout(() => {
     modeControlSection.classList.add('visible');
     progress.classList.add('visible');
-  }, 1000);
+  }, 200);
 }
 
 function switchToMode(mode) {
@@ -230,14 +278,13 @@ function getSpawnBounds(pW, pH) {
   const progressRect = progress.getBoundingClientRect();
   const modeRect = modeControlSection.getBoundingClientRect();
 
-  const gapTop = 8;     // „těsně“ pod horním prvkem
-  const gapBottom = 8;  // „těsně“ nad spodním prvkem
-  const sidePad = 2;    // skoro žádná deadzone po stranách
+  const gapTop = 8;
+  const gapBottom = 8;
+  const sidePad = 2;
 
   let minY = Math.max(0, progressRect.bottom + gapTop);
   let maxY = Math.min(vpH - pH, modeRect.top - gapBottom - pH);
 
-  // Fallback pro velmi malé obrazovky / horizontály
   if (maxY <= minY) {
     minY = 8;
     maxY = Math.max(8, vpH - pH - 8);
@@ -248,12 +295,9 @@ function getSpawnBounds(pW, pH) {
 
   return { minX, maxX, minY, maxY };
 }
-/* ===== KONEC DYNAMIKY ===== */
 
 function createSmallPentagons() {
   const container = document.querySelector('.container');
-
-  // Změř aktuální velikost pentagonu (respektuje media queries)
   const { w: pW, h: pH } = measureSmallPentagonSize();
   const { minX, maxX, minY, maxY } = getSpawnBounds(pW, pH);
 
@@ -261,7 +305,6 @@ function createSmallPentagons() {
     const smallPentagon = document.createElement('div');
     smallPentagon.className = 'small-pentagon';
 
-    // Náhodná pozice v dynamickém „koridoru“
     const x = minX + Math.random() * Math.max(1, (maxX - minX));
     const y = minY + Math.random() * Math.max(1, (maxY - minY));
 
