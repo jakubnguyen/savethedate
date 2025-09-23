@@ -12,52 +12,49 @@ body.simca-mode{ background:linear-gradient(135deg,#d7b0ff 0%,#c9a0ff 100%); }
 body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 .container{ position:relative; width:100%; height:100vh; display:flex; justify-content:center; align-items:center; }
 
-/* ── PRVNÍ SCÉNA: opravena velikost, crossfade i navázání ── */
+/* ── PRVNÍ SCÉNA: opravený pentagon ── */
 .pentagon{
-  position:absolute; left:50%; top:50%;
+  position:fixed; left:50%; top:50%;
   width:200px; height:200px;
   transform:translate(-50%,-50%);
   background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%);
   box-shadow:0 20px 40px rgba(36,178,255,.3);
   clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);
-  cursor:pointer; z-index:10; display:flex; justify-content:center; align-items:center;
-  will-change:width,height,transform,clip-path,opacity;
+  cursor:pointer; z-index:100; display:flex; justify-content:center; align-items:center;
+  will-change:width,height;
   transition:
-    width 2500ms cubic-bezier(.2,.8,.2,1),
-    height 2500ms cubic-bezier(.2,.8,.2,1),
-    transform 2500ms cubic-bezier(.2,.8,.2,1),
-    clip-path 2500ms cubic-bezier(.2,.8,.2,1),
-    box-shadow 2500ms ease,
-    opacity 500ms ease;
+    width 1800ms ease-out,
+    height 1800ms ease-out,
+    box-shadow 1000ms ease;
 }
 .pentagon:hover{ transform:translate(-50%,-50%) scale(1.05); box-shadow:0 30px 60px rgba(36,178,255,.4); }
 
-/* Text vybledne během expanze */
+/* Text s okamžitým mizením */
 .pentagon-text{ 
   color:#fff; font-size:16px; letter-spacing:2px; text-transform:uppercase; text-align:center; 
-  animation:pulse 2s infinite; opacity:1; transition:opacity 800ms ease;
+  animation:pulse 2s infinite; opacity:1;
+  position:relative; z-index:2;
 }
-.pentagon.expanding .pentagon-text{ opacity:0; }
 @keyframes pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
 
-/* Fialový overlay: MUSÍ být nad backgroundem (bez záporného z-indexu) */
-.pentagon::before{
-  content:""; position:absolute; inset:0; border-radius:inherit;
-  background:linear-gradient(135deg,#d7b0ff 0%, #c9a0ff 100%); /* Simča */
-  opacity:0; transition:opacity 2500ms cubic-bezier(.2,.8,.2,1);
-  clip-path:inherit; pointer-events:none;
+/* Text zmizí OKAMŽITĚ po kliknutí */
+.pentagon.clicked .pentagon-text { 
+  opacity:0 !important; 
+  animation:none !important;
+  transition:none !important;
 }
 
-/* Dostatečná velikost, aby to 100% pokrylo viewport */
+/* Pentagon roste ale zůstává MODRÝ */
 .pentagon.expanding{
-  width:220vmax; height:220vmax;
-  clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);
+  width:220vmax; 
+  height:220vmax;
+  clip-path:polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
   transform:translate(-50%,-50%);
-  box-shadow:0 0 0 rgba(0,0,0,0);
+  background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%);
+  box-shadow:none;
 }
-.pentagon.expanding::before{ opacity:1; }
 
-/* ── zbytek tvého kódu beze změny ── */
+/* ── zbytek beze změny ── */
 .small-pentagon{ width:60px; height:60px; background:linear-gradient(135deg,#24b2ff 0%,#1e90ff 100%); position:absolute; clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%); cursor:grab; transition:transform .2s ease; box-shadow:0 10px 20px rgba(36,178,255,.3); z-index:15; }
 .small-pentagon:hover{ transform:scale(1.1); }
 .small-pentagon:active{ cursor:grabbing; transform:scale(0.9); }
@@ -145,7 +142,7 @@ body.kuba-mode{ background:linear-gradient(135deg,#fffcc9 0%,#fff0a0 100%); }
 </div>
 
 <div class="container">
-  <!-- START: velký pentagon s opravou -->
+  <!-- START: velký pentagon s OKAMŽITÝM mizením textu -->
   <div class="pentagon" id="mainPentagon"><div class="pentagon-text">Klikni na mě!</div></div>
   <!-- END: velký pentagon -->
 
@@ -197,48 +194,36 @@ function startGame() {
   if (gameStarted) return;
   gameStarted = true;
 
-  // Spustíme expanzi + crossfade a necháme text vyblednout
+  // OPRAVENO: Text zmizí OKAMŽITĚ
+  mainPentagon.classList.add('clicked');
+  
+  // Pentagon začne růst
   mainPentagon.classList.add('expanding');
 
-  // Po dokončení animace navážeme 2. scénu – s fallbackem, ať to nikdy „nevisí“
-  const DURATION = 2500, BUFFER = 120;
-  let done = false;
-
-  const proceed = () => {
-    if (done) return; done = true;
+  // OPRAVENO: Kratší čekání - 1.5s místo čekání na transitionend
+  setTimeout(() => {
+    // Pentagon zmizí a hra začne RYCHLE
+    mainPentagon.style.display = 'none';
+    document.body.classList.add('simca-mode'); // Nastavit fialové pozadí
     startMusic();
     showControls();
-    // schovat velký pentagon
-    mainPentagon.style.opacity = '0';
-    mainPentagon.style.pointerEvents = 'none';
-    setTimeout(() => {
-      mainPentagon.style.display = 'none';
-      createSmallPentagons();
-      showHead();
-    }, 50);
-  };
-
-  const onEnd = (e) => {
-    if (e.target !== mainPentagon || e.propertyName !== 'width') return;
-    mainPentagon.removeEventListener('transitionend', onEnd);
-    proceed();
-  };
-
-  mainPentagon.addEventListener('transitionend', onEnd);
-  setTimeout(proceed, DURATION + BUFFER); // fallback pro jistotu
+    createSmallPentagons();
+    showHead();
+  }, 1500); // Pentagon je vizuálně "hotový" před koncem animace
 }
 
 function startMusic() {
   if (!musicStarted) {
     musicStarted = true;
     track1.play().catch(()=>{});
-    document.body.classList.add('simca-mode');
   }
 }
 
 function showControls() {
-  modeControlSection.classList.add('visible');
-  progress.classList.add('visible');
+  setTimeout(() => {
+    modeControlSection.classList.add('visible');
+    progress.classList.add('visible');
+  }, 200);
 }
 
 function switchToMode(mode) {
@@ -333,7 +318,7 @@ function createSmallPentagons() {
 }
 
 function showHead() {
-  setTimeout(() => { headContainer.classList.add('visible'); }, 600);
+  setTimeout(() => { headContainer.classList.add('visible'); }, 1000);
 }
 
 function addDragFunctionality(element) {
