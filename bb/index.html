@@ -200,7 +200,7 @@ function startGame() {
   // Pentagon začne růst
   mainPentagon.classList.add('expanding');
 
-  // OPRAVENO: Kratší čekání - 1.5s místo čekání na transitionend
+  // OPRAVENO: Ještě kratší čekání - 1200ms místo 1500ms
   setTimeout(() => {
     // Pentagon zmizí a hra začne RYCHLE
     mainPentagon.style.display = 'none';
@@ -209,7 +209,7 @@ function startGame() {
     showControls();
     createSmallPentagons();
     showHead();
-  }, 1500); // Pentagon je vizuálně "hotový" před koncem animace
+  }, 1200); // Zkráceno o dalších 300ms
 }
 
 function startMusic() {
