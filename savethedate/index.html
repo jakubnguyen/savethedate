@@ -26,16 +26,52 @@
     .stage{position:relative; height:100vh; display:grid; place-items:center}
 
     /* === ÚVOD: SRDCE === */
-    .intro{position:fixed; inset:0; display:grid; place-items:center; z-index:5;}
-    .heart-wrap{ position:relative; width:286px; height:286px; cursor:pointer; }
+    /* FIX: mobilní výška viewportu (iOS/Android) */
+.intro{
+  position: relative;
+  height: 100dvh;      /* dynamická výška, centrování bez vlivu adresního řádku */
+  display: grid;
+  place-items: center;
+  z-index: 5;
+}
+/* Fallback pro starší prohlížeče */
+@supports not (height: 100dvh){
+  .intro{ height: 100vh; }
+}
+
+    /* srdce podle šířky displeje, ale s rozumnými limity */
+.heart-wrap{
+  position: relative;
+  width: clamp(240px, 60vw, 340px);
+  height: clamp(240px, 60vw, 340px);
+  cursor: pointer;
+}
+.heart{
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(220px, 56vw, 320px);
+  height: clamp(220px, 56vw, 320px);
+  transition: width var(--expand-ms) var(--ease), height var(--expand-ms) var(--ease);
+}
+
+/* ponech: .heart-wrap.expanding .heart { width:220vmax; height:220vmax; } */
+
     /* Použijeme SVG, ať je tvar vždy perfektní */
-    .heart{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:364px; height:364px; transition: width var(--expand-ms) var(--ease), height var(--expand-ms) var(--ease); }
+   
     .heart svg{ width:100%; height:100%; display:block; }
     .heart path{ fill: var(--heart); }
     .heart svg{ width:100%; height:100%; display:block; }
     .heart path{ fill: var(--heart); }
 
-    .cta{ position:absolute; left:50%; top:45%; transform:translate(-50%,-45%); width:auto; text-align:center; font-size:20px; letter-spacing:1.2px; text-transform:uppercase; opacity:.95; transition:opacity 160ms ease; pointer-events:none; white-space:nowrap; }
+    .cta{
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto; text-align: center;
+  font-size: clamp(16px, 4.5vw, 20px);
+  letter-spacing: 1.2px; text-transform: uppercase;
+  opacity: .95; transition: opacity 160ms ease;
+  pointer-events: none; white-space: nowrap;
+}
     .heart-wrap.clicked .cta{ opacity:0; }
 
     /* expand na velikost, která zaručeně pokryje viewport */
@@ -49,7 +85,7 @@
     .names{ font-size:2rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:1.3rem; color:var(--heart); font-weight:400;  font-weight:400; }
     .date{ font-size:2.5rem; margin-bottom:1.2rem; color:var(--heart); font-weight:400; }
     .headline{ font-size:2.5rem; margin:.4rem 0 .9rem; letter-spacing:2px; color:var(--white); font-weight:400; }
-    .details{ font-size:1.5rem; line-height:1.6; max-width:600px; color:var(--white); }
+    .details{ font-size:1.3rem; line-height:1.6; max-width:600px; color:var(--white); }
 
     @media (max-width:768px){
       .heart{ width:150px; height:150px; }
@@ -57,7 +93,7 @@
       .names{ font-size:1.7rem; letter-spacing:2px; margin-bottom:1rem; }
       .date{ font-size:1.9rem; margin-bottom:.9rem; }
       .headline{ font-size:2rem; margin:.3rem 0 .7rem; }
-      .details{ font-size:1.3rem; padding:0 1rem; }
+      .details{ font-size:1rem; padding:0 1rem; }
     }
   </style>
 </head>
