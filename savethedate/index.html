@@ -42,16 +42,17 @@
     /* srdce podle šířky displeje, ale s rozumnými limity */
 .heart-wrap{
   position: relative;
-  width: clamp(240px, 60vw, 340px);
-  height: clamp(240px, 60vw, 340px);
+  width: clamp(200px, 60vw, 286px);
+  height: clamp(200px, 60vw, 286px);
   cursor: pointer;
 }
 .heart{
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(220px, 56vw, 320px);
-  height: clamp(220px, 56vw, 320px);
-  transition: width var(--expand-ms) var(--ease), height var(--expand-ms) var(--ease);
+  position: absolute; left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  width: clamp(180px, 55vw, 264px);
+  height: clamp(180px, 55vw, 264px);
+  transition: width var(--expand-ms) var(--ease),
+              height var(--expand-ms) var(--ease);
 }
 
 /* ponech: .heart-wrap.expanding .heart { width:220vmax; height:220vmax; } */
@@ -63,14 +64,14 @@
     .heart svg{ width:100%; height:100%; display:block; }
     .heart path{ fill: var(--heart); }
 
-    .cta{
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: auto; text-align: center;
-  font-size: clamp(16px, 4.5vw, 20px);
-  letter-spacing: 1.2px; text-transform: uppercase;
-  opacity: .95; transition: opacity 160ms ease;
-  pointer-events: none; white-space: nowrap;
+   .cta{
+  position:absolute; left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  width:auto; text-align:center;
+  font-size: clamp(14px, 4vw, 20px);  /* → zmenší se na mobilech */
+  letter-spacing:1.2px; text-transform:uppercase;
+  opacity:.95; transition:opacity 160ms ease;
+  pointer-events:none; white-space:nowrap;
 }
     .heart-wrap.clicked .cta{ opacity:0; }
 
@@ -93,7 +94,7 @@
       .names{ font-size:1.7rem; letter-spacing:2px; margin-bottom:1rem; }
       .date{ font-size:1.9rem; margin-bottom:.9rem; }
       .headline{ font-size:2rem; margin:.3rem 0 .7rem; }
-      .details{ font-size:1rem; padding:0 1rem; }
+      .details{ font-size:0.8rem; padding:0 1rem; }
     }
   </style>
 </head>
