@@ -46,18 +46,21 @@
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: center;
-      flex-wrap: wrap; gap: .2rem 1.8rem;
+      gap: .2rem 1.8rem;
       padding: .95rem 1.5rem;
       background: rgba(253,251,249,.94);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(212,55,122,.1);
+      overflow-x: auto; white-space: nowrap;
+      scrollbar-width: none;
     }
+    nav::-webkit-scrollbar { display: none; }
     nav a {
       font-family: 'Jost', sans-serif;
-      font-size: .78rem; font-weight: 500;
-      letter-spacing: 2.5px; text-transform: uppercase;
+      font-size: .75rem; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
       color: var(--muted); text-decoration: none;
-      transition: color .2s;
+      transition: color .2s; flex-shrink: 0;
     }
     nav a:hover { color: var(--accent); }
 
@@ -109,10 +112,12 @@
     }
     .hero-names {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 10vw, 7.5rem);
-      font-weight: 300; line-height: 1.05;
+      font-size: clamp(2.2rem, 8vw, 7.5rem);
+      font-weight: 300; line-height: 1.1;
       color: var(--dark);
       margin-bottom: 1.4rem;
+      padding: 0 1rem;
+      word-break: break-word;
     }
     .hero-names em {
       font-style: italic;
