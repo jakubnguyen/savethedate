@@ -264,18 +264,17 @@
       color: var(--muted); line-height: 1.85;
     }
     .color-palette {
-      display: flex; flex-wrap: wrap;
-      justify-content: center; gap: 1.4rem;
-      max-width: 700px; margin: 0 auto;
+      display: flex; flex-wrap: nowrap;
+      justify-content: center; gap: clamp(.6rem, 2vw, 1.4rem);
+      width: 100%;
     }
     .color-swatch {
-      width: clamp(68px, 12vw, 90px);
-      height: clamp(68px, 12vw, 90px);
-      border-radius: 50%;
+      width: clamp(44px, 10vw, 88px);
+      height: clamp(44px, 10vw, 88px);
+      border-radius: 50%; flex-shrink: 0;
       box-shadow: 0 4px 18px rgba(0,0,0,.11);
       transition: transform .22s;
       cursor: default;
-      flex-shrink: 0;
     }
     .color-swatch:hover { transform: scale(1.13); }
 
@@ -468,7 +467,7 @@
             <small style="font-size:.95rem;font-style:normal;letter-spacing:.5px;">GPS: 50.5127178°N, 14.6639336°E</small>
           </div>
           <div class="venue-buttons">
-            <a class="btn btn-primary" href="https://maps.app.goo.gl/iCYkm5bh4yBuxfc97" target="_blank" rel="noopener">Google Maps</a>
+            <a class="btn btn-primary" href="https://maps.app.goo.gl/iCYkm5bh4yBuxfc97" target="_blank" rel="noopener">Google Mapy</a>
             <a class="btn btn-secondary" href="https://mapy.com/s/jacorobece" target="_blank" rel="noopener">Mapy.cz</a>
           </div>
         </div>
