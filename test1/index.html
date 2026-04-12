@@ -231,16 +231,11 @@
     .tl-empty { /* for alternating layout */ }
 
     @media (max-width: 500px) {
-      .timeline::before { left: 10px; transform: none; width: 2px; }
-      .tl-item {
-        display: flex; flex-direction: row;
-        align-items: center; gap: .9rem;
-        padding: .75rem 0;
-      }
-      .tl-left  { display: contents; text-align: left; padding: 0; order: 2; }
-      .tl-right { text-align: left; padding: 0; order: 2; }
+      .timeline::before { left: 10px; transform: none; }
+      .tl-item { display: flex; flex-direction: row; align-items: center; gap: .9rem; padding: .75rem 0; }
       .tl-empty { display: none; }
-      .tl-dot { order: 1; flex-shrink: 0; margin-left: 4px; width: 10px; height: 10px; }
+      .tl-left, .tl-right { flex: 1; text-align: left; padding: 0; }
+      .tl-dot { order: -1; flex-shrink: 0; margin-left: 4px; width: 10px; height: 10px; }
       .tl-label { font-size: 1.05rem; }
     }
 
