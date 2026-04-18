@@ -127,9 +127,12 @@
         var(--p4) 51%, var(--p5) 68%, var(--p6) 85%, var(--p7) 100%);
     }
     .hero-eyebrow {
-      font-size: clamp(2rem, 4.5vw, 2.2rem);
+      font-size: clamp(1.5rem, 4.5vw, 2.2rem);
       letter-spacing: 5px; text-transform: uppercase;
       color: var(--muted); margin-bottom: 2.5rem;
+    }
+    @media (max-width: 520px) {
+      .hero-eyebrow { font-size: 1.5rem; }
     }
     .hero-names {
       font-family: 'The Seasons', serif;
@@ -163,6 +166,9 @@
     }
     .hero-meta span { white-space: nowrap; }
     .hero-meta .dot { color: var(--p4); }
+    @media (max-width: 520px) {
+      .hero-meta { gap: .2rem .8rem; font-size: 1rem; }
+    }
     .hero-scroll {
       margin-top: 3.5rem;
       font-size: 2rem;
@@ -219,6 +225,21 @@
     .time-callout-label {
       font-size: .9rem; letter-spacing: 3px;
       text-transform: uppercase; opacity: .9;
+    }
+    @media (max-width: 520px) {
+      .time-callout {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+      }
+      .time-callout-item {
+        padding: 1.8rem 1.5rem;
+        flex-direction: row; justify-content: space-between;
+        align-items: center; gap: 1rem;
+      }
+      .time-callout-item:first-child { border-radius: var(--r) var(--r) 0 0; }
+      .time-callout-item:last-child  { border-radius: 0 0 var(--r) var(--r); }
+      .time-callout-label { text-align: left; letter-spacing: 2px; }
+      .time-callout-time { font-size: 2.8rem; }
     }
 
     .timeline {
