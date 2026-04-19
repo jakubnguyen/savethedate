@@ -107,7 +107,7 @@
 
     /* ── NAV ── */
     nav {
-      position: fixed; top: 3px; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 5px; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
       gap: 1rem;
       padding: 1.1rem 1.6rem;
@@ -116,27 +116,22 @@
     }
     nav::after {
       content: ''; position: absolute; left: 0; right: 0; bottom: 0;
-      height: 2px;
+      height: 4px;
       background: var(--nav-color, var(--accent));
       transition: background .25s linear;
     }
     /* PROGRESS BAR (top) */
     .progress-track {
       position: fixed; top: 0; left: 0; right: 0;
-      height: 3px; z-index: 101;
-      background: linear-gradient(90deg,
-        var(--p1) 0%, var(--p2) 17%, var(--p3) 34%,
-        var(--p4) 51%, var(--p5) 68%, var(--p6) 85%, var(--p7) 100%);
-      opacity: .18;
+      height: 5px; z-index: 101;
+      background: #ebe1dc;
     }
     .progress-fill {
       position: fixed; top: 0; left: 0;
-      height: 3px; z-index: 102;
-      background: linear-gradient(90deg,
-        var(--p1) 0%, var(--p2) 17%, var(--p3) 34%,
-        var(--p4) 51%, var(--p5) 68%, var(--p6) 85%, var(--p7) 100%);
+      height: 5px; z-index: 102;
+      background: var(--nav-color, var(--accent));
       width: 0;
-      transition: width .12s linear;
+      transition: width .12s linear, background .25s linear;
     }
     .nav-mono {
       font-family: 'The Seasons', serif;
