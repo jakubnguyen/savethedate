@@ -133,26 +133,23 @@
       position: fixed; top: 0; left: 0;
       height: 6px; z-index: 103;
       background: var(--scroll-color, var(--accent));
-      width: 0; overflow: hidden;
-      transition: width .12s linear, background .25s linear;
+      width: 0;
+      transition: width .12s linear, background .25s linear, box-shadow .25s linear;
+      box-shadow: 0 0 14px 2px var(--scroll-color, var(--accent));
     }
-    /* shimmer inside fill */
-    .progress-fill::before {
-      content: ''; position: absolute; top: 0; left: 0; bottom: 0;
-      width: 30%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
-      animation: shimmer 3s ease-in-out infinite;
-    }
-    @keyframes shimmer {
-      0%   { transform: translateX(-100%); }
-      60%  { transform: translateX(400%); }
-      100% { transform: translateX(400%); }
+    .progress-fill::after {
+      /* glow on right edge */
+      content: ''; position: absolute; top: -2px; right: -6px;
+      width: 14px; height: calc(100% + 4px);
+      background: var(--scroll-color, var(--accent));
+      filter: blur(6px); opacity: .85;
+      border-radius: 50%;
     }
     .nav-mono {
       font-family: 'The Seasons', serif;
       font-weight: 400;
-      font-size: 1.3rem; color: var(--dark);
-      letter-spacing: 2px;
+      font-size: 1.75rem; color: var(--dark);
+      letter-spacing: 3px;
       flex-shrink: 0;
     }
     .nav-mono em {
@@ -174,7 +171,7 @@
     nav a:hover { color: var(--accent); }
     @media (max-width: 560px) {
       nav { padding: .9rem 1rem; }
-      .nav-mono { font-size: 1.15rem; letter-spacing: 1.5px; }
+      .nav-mono { font-size: 1.35rem; letter-spacing: 2px; }
       .nav-links { gap: 1rem; }
       nav a { font-size: .65rem; letter-spacing: 1.5px; }
     }
@@ -216,7 +213,7 @@
     .hero-eyebrow {
       font-size: clamp(1.5rem, 4.5vw, 2.2rem);
       letter-spacing: 5px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 2.5rem;
+      color: var(--p4); margin-bottom: 2.5rem;
     }
     @media (max-width: 520px) {
       .hero-eyebrow { font-size: 1.5rem; }
