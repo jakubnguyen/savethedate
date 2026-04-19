@@ -160,14 +160,15 @@
       display: flex; gap: 1.8rem;
       flex-shrink: 0;
     }
-    nav a {
+    .nav-links a {
       font-family: 'Jost', sans-serif;
       font-size: .82rem; font-weight: 500;
       letter-spacing: 2.5px; text-transform: uppercase;
-      color: var(--muted); text-decoration: none;
-      transition: color .2s;
+      color: var(--scroll-color, var(--accent));
+      text-decoration: none;
+      transition: color .25s linear, opacity .2s;
     }
-    nav a:hover { color: var(--accent); }
+    .nav-links a:hover { opacity: .65; }
     @media (max-width: 560px) {
       nav { padding: .9rem 1rem; }
       .nav-mono { font-size: 1.35rem; letter-spacing: 2px; }
