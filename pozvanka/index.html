@@ -107,13 +107,36 @@
 
     /* ── NAV ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed; top: 3px; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
       gap: 1rem;
       padding: 1.1rem 1.6rem;
       background: rgba(253,251,249,.96);
       backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(212,55,122,.1);
+    }
+    nav::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+      height: 2px;
+      background: var(--nav-color, var(--accent));
+      transition: background .25s linear;
+    }
+    /* PROGRESS BAR (top) */
+    .progress-track {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; z-index: 101;
+      background: linear-gradient(90deg,
+        var(--p1) 0%, var(--p2) 17%, var(--p3) 34%,
+        var(--p4) 51%, var(--p5) 68%, var(--p6) 85%, var(--p7) 100%);
+      opacity: .18;
+    }
+    .progress-fill {
+      position: fixed; top: 0; left: 0;
+      height: 3px; z-index: 102;
+      background: linear-gradient(90deg,
+        var(--p1) 0%, var(--p2) 17%, var(--p3) 34%,
+        var(--p4) 51%, var(--p5) 68%, var(--p6) 85%, var(--p7) 100%);
+      width: 0;
+      transition: width .12s linear;
     }
     .nav-mono {
       font-family: 'The Seasons', serif;
@@ -430,8 +453,12 @@
     <div class="curtain-logo">S <em>&amp;</em> J</div>
   </div>
 
+  <!-- PROGRESS BAR -->
+  <div class="progress-track"></div>
+  <div class="progress-fill" id="progressFill"></div>
+
   <!-- NAV -->
-  <nav>
+  <nav id="nav">
     <a href="#hero" class="nav-mono">S <em>&amp;</em> J</a>
     <div class="nav-links">
       <a href="#program">Program</a>
@@ -563,10 +590,13 @@
     const lerp = (a,b,t) => a + (b - a) * t;
     const rgb = stops.map(hexToRgb);
     const navAmp = document.querySelector('.nav-mono em');
-    function updateAmp() {
+    const navEl = document.getElementById('nav');
+    const progressFill = document.getElementById('progressFill');
+    function updateScroll() {
       const doc = document.documentElement;
       const max = doc.scrollHeight - doc.clientHeight;
       const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      // ampersand + nav line cycles palette 2x
       const pos = p * (rgb.length - 1);
       const i = Math.floor(pos);
       const t = pos - i;
@@ -574,10 +604,14 @@
       const r = Math.round(lerp(rgb[i][0], rgb[j][0], t));
       const g = Math.round(lerp(rgb[i][1], rgb[j][1], t));
       const b = Math.round(lerp(rgb[i][2], rgb[j][2], t));
-      navAmp.style.color = `rgb(${r},${g},${b})`;
+      const col = `rgb(${r},${g},${b})`;
+      navAmp.style.color = col;
+      navEl.style.setProperty('--nav-color', col);
+      // progress fill width
+      progressFill.style.width = (p * 100) + '%';
     }
-    window.addEventListener('scroll', updateAmp, { passive: true });
-    updateAmp();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    updateScroll();
 
     // ── REVEAL ON SCROLL
     const io = new IntersectionObserver((entries) => {
