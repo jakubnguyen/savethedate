@@ -74,8 +74,8 @@
     .curtain {
       position: fixed; inset: 0; z-index: 999;
       background: var(--cream);
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 2.1s var(--ease), visibility 0s linear 2.1s;
+      display: grid; place-items: center;
+      transition: transform .9s var(--ease), visibility 0s linear .9s;
     }
     .curtain.gone {
       transform: translateY(-102%);
@@ -87,13 +87,14 @@
       font-weight: 300; color: var(--dark);
       letter-spacing: 6px;
       opacity: 0;
-      animation: curtainFade 1.4s var(--ease) .3s forwards;
+      text-align: center;
+      animation: curtainFade .8s var(--ease) .1s forwards;
     }
     .curtain-logo em {
       font-style: italic; color: var(--accent); margin: 0 .3em;
     }
     @keyframes curtainFade {
-      0%   { opacity: 0; letter-spacing: 20px; }
+      0%   { opacity: 0; letter-spacing: 18px; }
       100% { opacity: 1; letter-spacing: 6px; }
     }
 
@@ -116,13 +117,15 @@
     }
     .nav-mono {
       font-family: 'The Seasons', serif;
-      font-style: italic; font-weight: 400;
-      font-size: 1.2rem; color: var(--dark);
-      letter-spacing: .5px;
+      font-weight: 400;
+      font-size: 1.3rem; color: var(--dark);
+      letter-spacing: 2px;
       flex-shrink: 0;
     }
-    .nav-mono .full  { display: inline; }
-    .nav-mono .short { display: none; }
+    .nav-mono em {
+      font-style: italic; color: var(--accent);
+      margin: 0 .25em;
+    }
     .nav-links {
       display: flex; gap: 1.8rem;
       flex-shrink: 0;
@@ -137,8 +140,7 @@
     nav a:hover { color: var(--accent); }
     @media (max-width: 560px) {
       nav { padding: .9rem 1rem; }
-      .nav-mono .full  { display: none; }
-      .nav-mono .short { display: inline; font-size: 1.4rem; letter-spacing: 2px; }
+      .nav-mono { font-size: 1.15rem; letter-spacing: 1.5px; }
       .nav-links { gap: 1rem; }
       nav a { font-size: .65rem; letter-spacing: 1.5px; }
     }
@@ -197,7 +199,8 @@
       .hero-names { font-weight: 700; }
     }
     .hero-names .amp {
-      color: var(--blue);
+      color: var(--accent);
+      font-style: italic;
       font-weight: 300;
     }
     .hero-tagline {
@@ -428,10 +431,7 @@
 
   <!-- NAV -->
   <nav>
-    <a href="#hero" class="nav-mono">
-      <span class="full">Simona &amp; Jakub</span>
-      <span class="short">S <em style="color:var(--accent)">&amp;</em> J</span>
-    </a>
+    <a href="#hero" class="nav-mono">S <em>&amp;</em> J</a>
     <div class="nav-links">
       <a href="#program">Program</a>
       <a href="#dresscode">Dress code</a>
@@ -552,7 +552,7 @@
   <script>
     // ── CURTAIN
     window.addEventListener('load', () => {
-      setTimeout(() => document.getElementById('curtain').classList.add('gone'), 1800);
+      setTimeout(() => document.getElementById('curtain').classList.add('gone'), 1100);
     });
 
     // ── REVEAL ON SCROLL
