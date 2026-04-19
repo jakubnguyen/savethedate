@@ -154,8 +154,10 @@
       text-decoration: none;
     }
     .nav-mono em {
-      font-style: normal; color: var(--p4);
+      font-style: normal;
+      color: var(--scroll-color, var(--p4));
       margin: 0 .25em;
+      transition: color .25s linear;
     }
     .nav-links {
       display: flex; gap: 1.8rem;
