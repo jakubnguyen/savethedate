@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catering Kalkulace – Jakub & Simča</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f7f3ee;
+    --warm-white: #fdfaf6;
+    --sand: #e8ddd0;
+    --sand-dark: #d4c5b2;
+    --terracotta: #c4714a;
+    --terracotta-light: #e8967a;
+    --sage: #7a9e87;
+    --sage-light: #a8c4b0;
+    --charcoal: #2d2a26;
+    --brown: #5a4a3a;
+    --brown-light: #8a7060;
+    --gold: #c4a265;
+    --gold-light: #dfc291;
+    --text: #3a3028;
+    --text-light: #7a6a58;
+    --disabled: #c8bfb5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 140px;
+  }
+
+  .header {
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 0%, rgba(196,162,101,0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(122,158,135,0.15) 0%, transparent 50%);
+  }
+  .header-inner { position: relative; }
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    color: var(--warm-white);
+  }
+  .header h1 em { font-style: italic; color: var(--gold-light); }
+  .header-sub {
+    font-size: 12px;
+    color: var(--sand-dark);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  .guest-bar {
+    background: var(--charcoal);
+    padding: 0 20px 20px;
+  }
+  .guest-control {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(196,162,101,0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .guest-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sand-dark);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .guest-stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+  .step-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .step-btn:active { background: var(--gold); color: var(--charcoal); }
+  .guest-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: var(--warm-white);
+    min-width: 36px;
+    text-align: center;
+    font-weight: 300;
+  }
+
+  .vat-bar {
+    background: var(--sand);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--sand-dark);
+  }
+  .vat-label { font-size: 13px; font-weight: 500; color: var(--brown); flex: 1; }
+  .toggle-group {
+    display: flex;
+    background: var(--sand-dark);
+    border-radius: 20px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .toggle-btn {
+    padding: 6px 16px;
+    border-radius: 17px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--brown);
+  }
+  .toggle-btn.active {
+    background: var(--charcoal);
+    color: var(--cream);
+  }
+
+  .content { padding: 16px 16px 0; }
+  .category { margin-bottom: 24px; }
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: var(--sand);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
+  .category-icon { font-size: 16px; flex-shrink: 0; }
+  .category-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--charcoal);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    flex: 1;
+  }
+  .category-total {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brown);
+  }
+
+  .item-card {
+    background: var(--warm-white);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+  }
+  .item-card.active {
+    border-color: var(--sage-light);
+    background: #fff;
+  }
+  .item-card.inactive {
+    opacity: 0.45;
+    background: var(--sand);
+  }
+  .item-card:active { transform: scale(0.98); }
+
+  .item-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .item-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--sand-dark);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .item-card.active .item-check {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+  .item-check svg { display: none; }
+  .item-card.active .item-check svg { display: block; }
+
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--charcoal);
+    line-height: 1.3;
+  }
+  .item-meta {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+  .item-price {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .item-price-main {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--charcoal);
+    white-space: nowrap;
+  }
+  .item-price-sub {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .item-warn {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(196,113,74,0.15);
+    color: #a0481e;
+    border-radius: 4px;
+    padding: 3px 7px;
+    margin-top: 5px;
+  }
+
+  .sticky-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--charcoal);
+    padding: 16px 20px 24px;
+    z-index: 100;
+    box-shadow: 0 -4px 30px rgba(0,0,0,0.25);
+  }
+  .footer-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-row-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--sand);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .footer-row-val {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--cream);
+  }
+  .footer-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    margin: 10px 0;
+  }
+  .footer-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .footer-total-label {
+    font-size: 12px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .footer-total-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    color: var(--gold);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+  }
+  .footer-per-person {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--sand-dark);
+    margin-top: 2px;
+  }
+
+  .reset-bar {
+    padding: 12px 20px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .reset-btn {
+    font-size: 12px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--sand-dark);
+    background: transparent;
+    color: var(--brown);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .reset-btn:active { background: var(--sand); }
+  .items-count {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-left: auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Catering · 29. 8. 2026</div>
+    <h1>Jakub <em>&amp;</em> Simča</h1>
+    <div class="header-sub">Chmelnice Luka, Doksy</div>
+  </div>
+</div>
+
+<div class="guest-bar">
+  <div class="guest-control">
+    <div class="guest-label">Počet hostů</div>
+    <div class="guest-stepper">
+      <button class="step-btn" onclick="changeGuests(-1)">−</button>
+      <div class="guest-count" id="guestDisplay">53</div>
+      <button class="step-btn" onclick="changeGuests(1)">+</button>
+    </div>
+  </div>
+</div>
+
+<div class="vat-bar">
+  <div class="vat-label">Zobrazit ceny</div>
+  <div class="toggle-group">
+    <button class="toggle-btn active" id="btnNoDPH" onclick="setVAT(false)">bez DPH</button>
+    <button class="toggle-btn" id="btnDPH" onclick="setVAT(true)">s DPH</button>
+  </div>
+</div>
+
+<div class="reset-bar">
+  <button class="reset-btn" onclick="selectAll(true)">✓ Vybrat vše</button>
+  <button class="reset-btn" onclick="selectAll(false)">✕ Odznačit vše</button>
+  <div class="items-count" id="itemsCount"></div>
+</div>
+
+<div class="content" id="content"></div>
+
+<div class="sticky-footer">
+  <div class="footer-rows">
+    <div class="footer-row">
+      <div class="footer-row-label">Základ bez DPH</div>
+      <div class="footer-row-val" id="footerBase">–</div>
+    </div>
+    <div class="footer-row">
+      <div class="footer-row-label">DPH</div>
+      <div class="footer-row-val" id="footerVAT">–</div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-total-row">
+    <div class="footer-total-label">Celkem s DPH</div>
+    <div class="footer-total-val" id="footerTotal">–</div>
+  </div>
+  <div class="footer-per-person" id="footerPP"></div>
+</div>
+
+<script>
+let guests = 53;
+let showVAT = false;
+
+const items = [
+  { cat: 'jidlo',   id: 'welcome',    name: 'Přípitek + welcome drink',     type: 'pp',    base: 53, unit: 52,    vat: 0.21, warn: null },
+  { cat: 'jidlo',   id: 'kanapky',    name: 'Kanapky',                      type: 'pp',    base: 53, unit: 210,   vat: 0.12, warn: null },
+  { cat: 'jidlo',   id: 'obed',       name: 'Svatební oběd',                type: 'pp',    base: 53, unit: 445,   vat: 0.12, warn: null },
+  { cat: 'jidlo',   id: 'raut',       name: 'Odpolední raut',               type: 'pp',    base: 53, unit: 250,   vat: 0.12, warn: null },
+  { cat: 'jidlo',   id: 'dodavatele', name: 'Menu dodavatelé',              type: 'fixed', base: 6,  unit: 500,   vat: 0.12, warn: '6 porcí – ověřit počet vendorů' },
+  { cat: 'jidlo',   id: 'gril',       name: 'Grilování',                    type: 'pp',    base: 53, unit: 460,   vat: 0.12, warn: null },
+  { cat: 'jidlo',   id: 'sweet',      name: 'Sweetbar',                     type: 'pp',    base: 53, unit: 120,   vat: 0.12, warn: null },
+  { cat: 'jidlo',   id: 'kava',       name: 'Káva',                         type: 'fixed', base: 1,  unit: 2700,  vat: 0.12, warn: null },
+  { cat: 'jidlo',   id: 'nealko',     name: 'Nealkoholické nápoje',         type: 'pp',    base: 53, unit: 140,   vat: 0.12, warn: null },
+  { cat: 'alkohol', id: 'pivo',       name: 'Pivo 50l keg',                 type: 'fixed', base: 1,  unit: 4000,  vat: 0.21, warn: '~0,94 l/os – přidat keg?' },
+  { cat: 'alkohol', id: 'vino',       name: 'Vína a prosecco',              type: 'fixed', base: 16, unit: 350,   vat: 0.21, warn: '16 porcí na 53 lidí – ověřit' },
+  { cat: 'alkohol', id: 'drinky',     name: 'Míchané drinky',               type: 'fixed', base: 40, unit: 115,   vat: 0.21, warn: '40 porcí = 75% hostů' },
+  { cat: 'alkohol', id: 'aperol',     name: 'Frozen aperol',                type: 'fixed', base: 20, unit: 180,   vat: 0.21, warn: '20 porcí = 38% hostů' },
+  { cat: 'sluzby',  id: 'servis',     name: 'Servis fee (bar + obsluha)',   type: 'fixed', base: 1,  unit: 14500, vat: 0.21, warn: 'Ověřit počet hodin' },
+  { cat: 'sluzby',  id: 'doprava',    name: 'Doprava vč. personálu',        type: 'fixed', base: 2,  unit: 2500,  vat: 0.21, warn: null },
+];
+
+const categories = [
+  { id: 'jidlo',   label: 'Jídlo & nápoje', icon: '🍽️' },
+  { id: 'alkohol', label: 'Alkohol',         icon: '🍷' },
+  { id: 'sluzby',  label: 'Služby',          icon: '⚙️' },
+];
+
+let selected = {};
+items.forEach(i => selected[i.id] = true);
+
+function getPrice(item) {
+  const count = item.type === 'pp' ? guests : item.base;
+  const base = count * item.unit;
+  return { base, vat: base * item.vat, total: base * (1 + item.vat) };
+}
+
+function fmt(n) {
+  const s = String(Math.round(n));
+  let result = '';
+  for (let i = 0; i < s.length; i++) {
+    if (i > 0 && (s.length - i) % 3 === 0) result += '\u00a0';
+    result += s[i];
+  }
+  return result + '\u00a0Kč';
+}
+
+function toggleItem(id) {
+  selected[id] = !selected[id];
+  render();
+}
+
+function changeGuests(d) {
+  guests = Math.max(1, guests + d);
+  document.getElementById('guestDisplay').textContent = guests;
+  render();
+}
+
+function setVAT(v) {
+  showVAT = v;
+  document.getElementById('btnDPH').classList.toggle('active', v);
+  document.getElementById('btnNoDPH').classList.toggle('active', !v);
+  render();
+}
+
+function selectAll(val) {
+  items.forEach(i => selected[i.id] = val);
+  render();
+}
+
+function render() {
+  const content = document.getElementById('content');
+  let html = '';
+  let totalBase = 0, totalVAT = 0, activeCount = 0;
+
+  categories.forEach(cat => {
+    const catItems = items.filter(i => i.cat === cat.id);
+    let catBase = 0;
+
+    catItems.forEach(item => {
+      if (selected[item.id]) {
+        const p = getPrice(item);
+        catBase += showVAT ? p.total : p.base;
+        totalBase += p.base;
+        totalVAT += p.vat;
+        activeCount++;
+      }
+    });
+
+    html += `<div class="category">
+      <div class="category-header">
+        <span class="category-icon">${cat.icon}</span>
+        <span class="category-title">${cat.label}</span>
+        <span class="category-total">${fmt(catBase)}</span>
+      </div>`;
+
+    catItems.forEach(item => {
+      const p = getPrice(item);
+      const displayPrice = showVAT ? p.total : p.base;
+      const isActive = selected[item.id];
+      const countLabel = item.type === 'pp'
+        ? `${guests} os. × ${item.unit} Kč • DPH ${Math.round(item.vat * 100)}%`
+        : `${item.base} ks × ${item.unit} Kč • DPH ${Math.round(item.vat * 100)}%`;
+
+      html += `<div class="item-card ${isActive ? 'active' : 'inactive'}" onclick="toggleItem('${item.id}')">
+        <div class="item-top">
+          <div class="item-check">
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+              <path d="M1 4l3 3 6-6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="item-info">
+            <div class="item-name">${item.name}</div>
+            <div class="item-meta">${countLabel}</div>
+            ${item.warn ? `<div class="item-warn">⚠ ${item.warn}</div>` : ''}
+          </div>
+          <div class="item-price">
+            <div class="item-price-main">${fmt(displayPrice)}</div>
+            ${showVAT
+              ? `<div class="item-price-sub">bez DPH ${fmt(p.base)}</div>`
+              : `<div class="item-price-sub">s DPH ${fmt(p.total)}</div>`}
+          </div>
+        </div>
+      </div>`;
+    });
+
+    html += '</div>';
+  });
+
+  content.innerHTML = html;
+
+  const totalWithVAT = totalBase + totalVAT;
+  document.getElementById('footerBase').textContent = fmt(totalBase);
+  document.getElementById('footerVAT').textContent = fmt(totalVAT);
+  document.getElementById('footerTotal').textContent = fmt(totalWithVAT);
+  document.getElementById('footerPP').textContent = guests > 0 ? `${fmt(totalWithVAT / guests)} / osoba` : '';
+  document.getElementById('itemsCount').textContent = `${activeCount} z ${items.length} položek`;
+}
+
+document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>
